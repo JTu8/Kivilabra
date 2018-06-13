@@ -5,9 +5,51 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:KiviMassaApp"
         mc:Ignorable="d"
-        Title="Massaohjelma" Height="323.747" Width="577.836"
-        WindowState="Maximized">
-    <Grid>
+        Title="Massaohjelma" Height="1095.747" Width="1929.836"
+        WindowState="Maximized"
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch">
+    <!--Menuvalikko-->
+    <Canvas Height="20" Canvas.Top="-262" Width="370" Canvas.Left="-6" Margin="0,0,1552,1045">
+        <DockPanel>
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="Tiedosto">
+                    <MenuItem Header="Avaa"></MenuItem>
+                    <MenuItem Header="Tallenna"></MenuItem>
+                </MenuItem>
+                <MenuItem Header="Kopioi tiedot">
 
-    </Grid>
+                </MenuItem>
+                <MenuItem Header="Ohje">
+
+                </MenuItem>
+            </Menu>
+        </DockPanel>
+        <!--Tiedot lohko-->
+        <Canvas Height="176" Canvas.Top="23" Width="687">
+            <Label Content="Sekoitusasema:"></Label>
+            <TextBox Name="sekoitusAsema" Canvas.Left="96" Height="21" Width="145" Canvas.Top="5"/>
+
+            <Label Content="Lisätietoja:" Canvas.Top="26"></Label>
+            <TextBox Name="lisatietoja" Canvas.Left="96" Height="21" Width="145" Canvas.Top="31"/>
+
+            <Label Content="Päällyste:" Canvas.Left="265" Canvas.Top="1"></Label>
+            <TextBox Name="paallyste" Canvas.Left="346" Height="21" Width="121" Canvas.Top="6" TextChanged="paallyste_TextChanged"/>
+
+            <Label Content="Päiväys:" Canvas.Left="265" Canvas.Top="26"></Label>
+            <TextBox Name="paivays" Canvas.Left="346" Height="21" Width="121" Canvas.Top="32"/>
+
+            <Label Content="Urakka:" Canvas.Left="265" Canvas.Top="52"></Label>
+            <TextBox Name="urakka" Canvas.Left="346" Height="21" Width="121" Canvas.Top="58"/>
+
+            <Label Content="Työkohde:" Canvas.Left="266" Canvas.Top="78"></Label>
+            <TextBox Name="tyokohde" Canvas.Left="346" Height="21" Width="121" Canvas.Top="83"/>
+
+            <Label Content="Näyte nro:" Canvas.Left="482" Canvas.Top="1"></Label>
+            <TextBox Name="nayteNro" Canvas.Left="552" Height="21" Width="121" Canvas.Top="5"/>
+
+            <Label Content="Klo:" Canvas.Left="482" Canvas.Top="27"></Label>
+            <TextBox Name="klo" Canvas.Left="552" Height="21" Width="121" Canvas.Top="31"/>
+        </Canvas>
+    </Canvas>
 </Window>

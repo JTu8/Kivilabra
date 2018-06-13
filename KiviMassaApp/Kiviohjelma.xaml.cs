@@ -33,8 +33,7 @@ namespace KiviMassaApp
         {
 
             EmptyGramFields(); //Kutsuu funktiota mikä tyhjentää seulalle jääneet gramma arvot
-            string s = Seula1.Text;
-            MessageBox.Show(s);
+            
         }
 
         private void EmptyGramFields() //Funktio mikä tyhjentää seulalle jääneet gramma arvot

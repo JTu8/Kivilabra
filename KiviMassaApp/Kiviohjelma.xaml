@@ -6,6 +6,8 @@
         xmlns:local="clr-namespace:KiviMassaApp"
         mc:Ignorable="d"
         Title="Kiviohjelma" Height="1117.809" Width="2179.016"
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch"
         WindowState="Maximized">
 
     <Canvas Margin="10,259,1345,190" Background="BlanchedAlmond">
@@ -185,7 +187,7 @@
         <TextBox Name="seulaG16" Height="21" Width="68" Canvas.Left="97" Canvas.Top="469"></TextBox>
         <TextBox Name="seulaG17" Height="21" Width="68" Canvas.Left="97" Canvas.Top="495"></TextBox>
         <TextBox Name="seulaG18" Height="21" Width="68" Canvas.Left="97" Canvas.Top="521"></TextBox>
-        <Button Height="21" Width="68" Canvas.Left="96" Canvas.Top="545" Click="EmptyFields_Click">Tyhjää arvot</Button>
+        <Button x:Name="EmptyValues" Height="21" Width="68" Canvas.Left="96" Canvas.Top="545" Click="EmptyFields_Click">Tyhjää arvot</Button>
 
         <!--Seulalle jäävien prosenttiarvojen laatikot-->
         <Label Content="Seulalle jäi %" Canvas.Left="189" Canvas.Top="21"></Label>
@@ -235,14 +237,15 @@
         <TextBox Name="punnittuYhteensa" Height="21" Width="68" Canvas.Left="355" Canvas.Top="529" IsReadOnly="True"></TextBox>
 
         <!--Laske nappi-->
-        <Button Height="21" Width="68" Canvas.Left="721" Canvas.Top="607">Laske</Button>
+        <Button Height="21" Width="68" Canvas.Left="452" Canvas.Top="527">Laske</Button>
 
         <!--Ohjealueet-->
         <Canvas Height="539" Canvas.Left="565" Width="547" Background="AliceBlue">
-            <Label Content="Sisempi ohjeale" Canvas.Left="120"></Label>
+            <Label Content="Sisempi ohjealue" Canvas.Left="161"></Label>
             <Label Content="Ulompi ohjealue" Canvas.Left="334"></Label>
 
-            <Label Content="Seula #mm" Canvas.Top="21"></Label>
+            <!--Seulasarjat-->
+            <Label Content="Seula #mm" Canvas.Left="-2" Canvas.Top="27"/>
             <TextBox Name="seulaValue1" Height="21" Width="68" Canvas.Top="53" IsReadOnly="True"></TextBox>
             <TextBox Name="seulaValue2" Height="21" Width="68" Canvas.Top="79" IsReadOnly="True"></TextBox>
             <TextBox Name="seulaValue3" Height="21" Width="68" Canvas.Top="105" IsReadOnly="True"></TextBox>
@@ -256,12 +259,13 @@
             <TextBox Name="seulaValue11" Height="21" Width="68" Canvas.Top="313" IsReadOnly="True"></TextBox>
             <TextBox Name="seulaValue12" Height="21" Width="68" Canvas.Top="339" IsReadOnly="True"></TextBox>
             <TextBox Name="seulaValue13" Height="21" Width="68" Canvas.Top="365" IsReadOnly="True"></TextBox>
-            <TextBox Name="seulaValue14" Height="21" Width="68" Canvas.Top="339" IsReadOnly="True"></TextBox>
-            <TextBox Name="seulaValue15" Height="21" Width="68" Canvas.Top="391" IsReadOnly="True"></TextBox>
-            <TextBox Name="seulaValue16" Height="21" Width="68" Canvas.Top="417" IsReadOnly="True"></TextBox>
-            <TextBox Name="seulaValue17" Height="21" Width="68" Canvas.Top="443" IsReadOnly="True"></TextBox>
-            <TextBox Name="seulaValue18" Height="21" Width="68" Canvas.Top="469" IsReadOnly="True"></TextBox>
+            <TextBox Name="seulaValue14" Height="21" Width="68" Canvas.Top="391" IsReadOnly="True"></TextBox>
+            <TextBox Name="seulaValue15" Height="21" Width="68" Canvas.Top="417" IsReadOnly="True"></TextBox>
+            <TextBox Name="seulaValue16" Height="21" Width="68" Canvas.Top="443" IsReadOnly="True"></TextBox>
+            <TextBox Name="seulaValue17" Height="21" Width="68" Canvas.Top="469" IsReadOnly="True"></TextBox>
+            <TextBox Name="seulaValue18" Height="21" Width="68" Canvas.Top="495" IsReadOnly="True"></TextBox>
 
+            <!--Sisempi ohjealue-->
             <Label Content="Alempi ohje %" Canvas.Left="120" Canvas.Top="29"></Label>
             <TextBox Name="sisOhjAlempiValue1" Height="21" Width="68" Canvas.Top="53" Canvas.Left="129"></TextBox>
             <TextBox Name="sisOhjAlempiValue2" Height="21" Width="68" Canvas.Top="79" Canvas.Left="129"></TextBox>
@@ -280,8 +284,68 @@
             <TextBox Name="sisOhjAlempiValue15" Height="21" Width="68" Canvas.Top="417" Canvas.Left="129"></TextBox>
             <TextBox Name="sisOhjAlempiValue16" Height="21" Width="68" Canvas.Top="443" Canvas.Left="129"></TextBox>
             <TextBox Name="sisOhjAlempiValue17" Height="21" Width="68" Canvas.Top="469" Canvas.Left="129"></TextBox>
+            <TextBox Name="sisOhjAlempiValue18" Height="21" Width="68" Canvas.Top="495" Canvas.Left="129"></TextBox>
 
-            <Label Content="Ulompi ohje %" Canvas.Left="212" Canvas.Top="29"></Label>
+            <Label Content="Ylempi ohje %" Canvas.Left="212" Canvas.Top="29"></Label>
+            <TextBox Name="SisOhjYlempiValue1" Height="21" Width="68" Canvas.Top="53" Canvas.Left="221"></TextBox>
+            <TextBox Name="SisOhjYlempiValue2" Height="21" Width="68" Canvas.Top="79" Canvas.Left="221"></TextBox>
+            <TextBox Name="SisOhjYlempiValue3" Height="21" Width="68" Canvas.Top="105" Canvas.Left="221"></TextBox>
+            <TextBox Name="SisOhjYlempiValue4" Height="21" Width="68" Canvas.Top="131" Canvas.Left="221"></TextBox>
+            <TextBox Name="SisOhjYlempiValue5" Height="21" Width="68" Canvas.Top="157" Canvas.Left="221"></TextBox>
+            <TextBox Name="SisOhjYlempiValue6" Height="21" Width="68" Canvas.Top="183" Canvas.Left="221"></TextBox>
+            <TextBox Name="SisOhjYlempiValue7" Height="21" Width="68" Canvas.Top="209" Canvas.Left="221"></TextBox>
+            <TextBox Name="SisOhjYlempiValue8" Height="21" Width="68" Canvas.Top="235" Canvas.Left="221"></TextBox>
+            <TextBox Name="SisOhjYlempiValue9" Height="21" Width="68" Canvas.Top="261" Canvas.Left="221"></TextBox>
+            <TextBox Name="SisOhjYlempiValue10" Height="21" Width="68" Canvas.Top="287" Canvas.Left="221"></TextBox>
+            <TextBox Name="SisOhjYlempiValue11" Height="21" Width="68" Canvas.Top="313" Canvas.Left="221"></TextBox>
+            <TextBox Name="SisOhjYlempiValue12" Height="21" Width="68" Canvas.Top="339" Canvas.Left="221"></TextBox>
+            <TextBox Name="SisOhjYlempiValue13" Height="21" Width="68" Canvas.Top="365" Canvas.Left="221"></TextBox>
+            <TextBox Name="SisOhjYlempiValue14" Height="21" Width="68" Canvas.Top="391" Canvas.Left="221"></TextBox>
+            <TextBox Name="SisOhjYlempiValue15" Height="21" Width="68" Canvas.Top="417" Canvas.Left="221"></TextBox>
+            <TextBox Name="SisOhjYlempiValue16" Height="21" Width="68" Canvas.Top="443" Canvas.Left="221"></TextBox>
+            <TextBox Name="SisOhjYlempiValue17" Height="21" Width="68" Canvas.Top="469" Canvas.Left="221"></TextBox>
+            <TextBox Name="SisOhjYlempiValue18" Height="21" Width="68" Canvas.Top="495" Canvas.Left="221"></TextBox>
+
+            <!--Ulompi ohjealue-->
+            <Label Content="Alempi ohje %" Canvas.Left="315" Canvas.Top="29"></Label>
+            <TextBox Name="UloOhjAlempiValue1" Height="21" Width="68" Canvas.Top="53" Canvas.Left="325"></TextBox>
+            <TextBox Name="UloOhjAlempiValue2" Height="21" Width="68" Canvas.Top="79" Canvas.Left="325"></TextBox>
+            <TextBox Name="UloOhjAlempiValue3" Height="21" Width="68" Canvas.Top="105" Canvas.Left="325"></TextBox>
+            <TextBox Name="UloOhjAlempiValue4" Height="21" Width="68" Canvas.Top="131" Canvas.Left="325"></TextBox>
+            <TextBox Name="UloOhjAlempiValue5" Height="21" Width="68" Canvas.Top="157" Canvas.Left="325"></TextBox>
+            <TextBox Name="UloOhjAlempiValue6" Height="21" Width="68" Canvas.Top="183" Canvas.Left="325"></TextBox>
+            <TextBox Name="UloOhjAlempiValue7" Height="21" Width="68" Canvas.Top="209" Canvas.Left="325"></TextBox>
+            <TextBox Name="UloOhjAlempiValue8" Height="21" Width="68" Canvas.Top="235" Canvas.Left="325"></TextBox>
+            <TextBox Name="UloOhjAlempiValue9" Height="21" Width="68" Canvas.Top="261" Canvas.Left="325"></TextBox>
+            <TextBox Name="UloOhjAlempiValue10" Height="21" Width="68" Canvas.Top="287" Canvas.Left="325"></TextBox>
+            <TextBox Name="UloOhjAlempiValue11" Height="21" Width="68" Canvas.Top="313" Canvas.Left="325"></TextBox>
+            <TextBox Name="UloOhjAlempiValue12" Height="21" Width="68" Canvas.Top="339" Canvas.Left="325"></TextBox>
+            <TextBox Name="UloOhjAlempiValue13" Height="21" Width="68" Canvas.Top="365" Canvas.Left="325"></TextBox>
+            <TextBox Name="UloOhjAlempiValue14" Height="21" Width="68" Canvas.Top="391" Canvas.Left="325"></TextBox>
+            <TextBox Name="UloOhjAlempiValue15" Height="21" Width="68" Canvas.Top="417" Canvas.Left="325"></TextBox>
+            <TextBox Name="UloOhjAlempiValue16" Height="21" Width="68" Canvas.Top="443" Canvas.Left="325"></TextBox>
+            <TextBox Name="UloOhjAlempiValue17" Height="21" Width="68" Canvas.Top="469" Canvas.Left="325"></TextBox>
+            <TextBox Name="UloOhjAlempiValue18" Height="21" Width="68" Canvas.Top="495" Canvas.Left="325"></TextBox>
+
+            <Label Content="Ylempi ohje %" Canvas.Left="416" Canvas.Top="29"></Label>
+            <TextBox Name="UloOhjYlempiValue1" Height="21" Width="68" Canvas.Top="53" Canvas.Left="425"></TextBox>
+            <TextBox Name="UloOhjYlempiValue2" Height="21" Width="68" Canvas.Top="79" Canvas.Left="425"></TextBox>
+            <TextBox Name="UloOhjYlempiValue3" Height="21" Width="68" Canvas.Top="105" Canvas.Left="425"></TextBox>
+            <TextBox Name="UloOhjYlempiValue4" Height="21" Width="68" Canvas.Top="131" Canvas.Left="425"></TextBox>
+            <TextBox Name="UloOhjYlempiValue5" Height="21" Width="68" Canvas.Top="157" Canvas.Left="425"></TextBox>
+            <TextBox Name="UloOhjYlempiValue6" Height="21" Width="68" Canvas.Top="183" Canvas.Left="425"></TextBox>
+            <TextBox Name="UloOhjYlempiValue7" Height="21" Width="68" Canvas.Top="209" Canvas.Left="425"></TextBox>
+            <TextBox Name="UloOhjYlempiValue8" Height="21" Width="68" Canvas.Top="235" Canvas.Left="425"></TextBox>
+            <TextBox Name="UloOhjYlempiValue9" Height="21" Width="68" Canvas.Top="261" Canvas.Left="425"></TextBox>
+            <TextBox Name="UloOhjYlempiValue10" Height="21" Width="68" Canvas.Top="287" Canvas.Left="425"></TextBox>
+            <TextBox Name="UloOhjYlempiValue11" Height="21" Width="68" Canvas.Top="313" Canvas.Left="425"></TextBox>
+            <TextBox Name="UloOhjYlempiValue12" Height="21" Width="68" Canvas.Top="339" Canvas.Left="425"></TextBox>
+            <TextBox Name="UloOhjYlempiValue13" Height="21" Width="68" Canvas.Top="365" Canvas.Left="425"></TextBox>
+            <TextBox Name="UloOhjYlempiValue14" Height="21" Width="68" Canvas.Top="391" Canvas.Left="425"></TextBox>
+            <TextBox Name="UloOhjYlempiValue15" Height="21" Width="68" Canvas.Top="417" Canvas.Left="425"></TextBox>
+            <TextBox Name="UloOhjYlempiValue16" Height="21" Width="68" Canvas.Top="443" Canvas.Left="425"></TextBox>
+            <TextBox Name="UloOhjYlempiValue17" Height="21" Width="68" Canvas.Top="469" Canvas.Left="425"></TextBox>
+            <TextBox Name="UloOhjYlempiValue18" Height="21" Width="68" Canvas.Top="495" Canvas.Left="425"></TextBox>
         </Canvas>
 
 

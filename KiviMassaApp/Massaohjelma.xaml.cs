@@ -23,5 +23,10 @@ namespace KiviMassaApp
         {
             InitializeComponent();
         }
+
+        private void paallyste_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
     }
 }
