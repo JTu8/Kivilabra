@@ -25,13 +25,13 @@ namespace KiviMassaApp
             InitializeComponent();
         }
 
-        private void OpenKivi(object sender, RoutedEventArgs e)
+        private void OpenKivi(object sender, RoutedEventArgs e) //Avaa kiviohjelman
         {
             Kiviohjelma k = new Kiviohjelma();
             k.Show();
         }
 
-        private void OpenMassa(object sender, RoutedEventArgs e)
+        private void OpenMassa(object sender, RoutedEventArgs e) //Avaa massaohjelman
         {
             Massaohjelma m = new Massaohjelma();
             m.Show();
