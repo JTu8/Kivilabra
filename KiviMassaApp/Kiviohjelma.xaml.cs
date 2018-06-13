@@ -33,6 +33,8 @@ namespace KiviMassaApp
         {
 
             EmptyGramFields(); //Kutsuu funktiota mikä tyhjentää seulalle jääneet gramma arvot
+            string s = Seula1.Text;
+            MessageBox.Show(s);
         }
 
         private void EmptyGramFields() //Funktio mikä tyhjentää seulalle jääneet gramma arvot
@@ -56,6 +58,18 @@ namespace KiviMassaApp
             seulaG15.Text = String.Empty;
             seulaG16.Text = String.Empty;
             seulaG17.Text = String.Empty;
+        }
+
+        private void Seula1_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(Seula1.SelectedIndex == -1)
+            {
+                seulaValue1.Text = string.Empty;
+            }
+            else
+            {
+                //seulaValue1.Text = Seula1.SelectedIndex.ToString().Trim();
+            }
         }
     }
 }
