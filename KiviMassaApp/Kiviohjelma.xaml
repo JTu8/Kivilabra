@@ -10,7 +10,7 @@
         VerticalAlignment="Stretch"
         WindowState="Maximized">
 
-    <Canvas Margin="10,259,1345,190" Background="BlanchedAlmond">
+    <Canvas Margin="10,259,1345,190" Background="BlanchedAlmond" Name="seulaSarjat">
         <!--Menupalkki-->
         <Canvas Height="20" Canvas.Top="-262" Width="370" Canvas.Left="-6">
             <DockPanel>
@@ -51,7 +51,7 @@
         </Canvas>
 
         <!--Lisävaihtoehdot-->
-        <Canvas Height="152" Canvas.Left="-6" Canvas.Top="-153" Width="570" Background="Beige">
+        <Canvas Height="157" Canvas.Left="-6" Canvas.Top="-158" Width="570" Background="Beige">
             <RadioButton>Kuivaseulanta</RadioButton>
             <RadioButton Canvas.Top="15">Märkäseulanta</RadioButton>
 
@@ -63,7 +63,7 @@
         </Canvas>
 
         <!--Otsikot ja muut tiedot-->
-        <Canvas Height="236" Canvas.Left="569" Canvas.Top="-237" Width="647" Background="Bisque" RenderTransformOrigin="0.5,0.5">
+        <Canvas Height="236" Canvas.Left="566" Canvas.Top="-237" Width="544" Background="Bisque" RenderTransformOrigin="0.5,0.5">
             <Canvas.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -240,10 +240,12 @@
         <Button Height="21" Width="68" Canvas.Left="452" Canvas.Top="527">Laske</Button>
 
         <!--Ohjealueet-->
-        <Canvas Height="539" Canvas.Left="565" Width="547" Background="AliceBlue">
+        <Canvas Height="568" Canvas.Left="565" Width="547" Background="AliceBlue" Name="ohjeAlue">
             <Label Content="Sisempi ohjealue" Canvas.Left="161"></Label>
             <Label Content="Ulompi ohjealue" Canvas.Left="334"></Label>
-
+            
+            
+            
             <!--Seulasarjat-->
             <Label Content="Seula #mm" Canvas.Left="-2" Canvas.Top="27"/>
             <TextBox Name="seulaValue1" Height="21" Width="68" Canvas.Top="53" IsReadOnly="True"></TextBox>
@@ -346,7 +348,11 @@
             <TextBox Name="UloOhjYlempiValue16" Height="21" Width="68" Canvas.Top="443" Canvas.Left="425"></TextBox>
             <TextBox Name="UloOhjYlempiValue17" Height="21" Width="68" Canvas.Top="469" Canvas.Left="425"></TextBox>
             <TextBox Name="UloOhjYlempiValue18" Height="21" Width="68" Canvas.Top="495" Canvas.Left="425"></TextBox>
+
+            <Button x:Name="EmptyOhjealue" Height="21" Width="150" Canvas.Left="343" Canvas.Top="537" Click="EmptyOhjealue_Click">Tyhjää ohjealueiden arvot</Button>
+            
         </Canvas>
+
 
 
 

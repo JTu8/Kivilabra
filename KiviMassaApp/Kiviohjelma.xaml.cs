@@ -38,6 +38,8 @@ namespace KiviMassaApp
 
         private void EmptyGramFields() //Funktio mikä tyhjentää seulalle jääneet gramma arvot
         {
+            
+            
             seulaG0.Text = String.Empty;
             seulaG1.Text = String.Empty;
             seulaG2.Text = String.Empty;
@@ -57,18 +59,54 @@ namespace KiviMassaApp
             seulaG15.Text = String.Empty;
             seulaG16.Text = String.Empty;
             seulaG17.Text = String.Empty;
+            
         }
 
         private void Seula1_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if(Seula1.SelectedIndex == -1)
-            {
-                seulaValue1.Text = string.Empty;
-            }
-            else
-            {
-                //seulaValue1.Text = Seula1.SelectedIndex.ToString().Trim();
-            }
+
+            
+            
         }
+
+        private void EmptyOhjealue_Click(object sender, RoutedEventArgs e)
+        {
+            EmptyOhjeAlueet();
+        }
+
+        private void EmptyOhjeAlueet() //Funktio mikä tyhjentää ohjealuekentät
+        {
+            
+            foreach (Control c in ohjeAlue.Children)
+            {
+                if(c.GetType() == typeof(TextBox))
+                {
+                    ((TextBox)c).Text = String.Empty;
+                }
+            }
+
+            /*
+            sisOhjAlempiValue1.Text = String.Empty;
+            sisOhjAlempiValue1.Text = String.Empty;
+            sisOhjAlempiValue1.Text = String.Empty;
+            sisOhjAlempiValue1.Text = String.Empty;
+            sisOhjAlempiValue1.Text = String.Empty;
+            sisOhjAlempiValue1.Text = String.Empty;
+            sisOhjAlempiValue1.Text = String.Empty;
+            sisOhjAlempiValue1.Text = String.Empty;
+            sisOhjAlempiValue1.Text = String.Empty;
+            sisOhjAlempiValue1.Text = String.Empty;
+            sisOhjAlempiValue1.Text = String.Empty;
+            sisOhjAlempiValue1.Text = String.Empty;
+            sisOhjAlempiValue1.Text = String.Empty;
+            sisOhjAlempiValue1.Text = String.Empty;
+            sisOhjAlempiValue1.Text = String.Empty;
+            sisOhjAlempiValue1.Text = String.Empty;
+            sisOhjAlempiValue1.Text = String.Empty;
+            sisOhjAlempiValue1.Text = String.Empty;
+            */
+        }
+
+        
     }
 }

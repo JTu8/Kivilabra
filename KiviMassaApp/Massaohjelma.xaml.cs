@@ -28,5 +28,10 @@ namespace KiviMassaApp
         {
 
         }
+
+        private void Seula1_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }
