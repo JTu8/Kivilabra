@@ -104,7 +104,7 @@
             <Label Content="Rakeisuus #0,063mm" Canvas.Left="317" Canvas.Top="125"></Label>
             <TextBox Name="rakeisuus0065mm" Canvas.Left="448" Height="21" Width="121" Canvas.Top="130"/>
         </Canvas>
-        
+
         <!--Seulasarja ja laskukentät-->
         <Canvas Height="863" Canvas.Top="199" Width="1140" Background="BlanchedAlmond">
             <Label Content="Seula" Canvas.Left="10" Canvas.Top="21"></Label>
@@ -220,12 +220,69 @@
             <TextBox Name="lapaisypros14" Height="21" Width="68" Canvas.Left="274" Canvas.Top="391" IsReadOnly="True" Background="#ffccb3"></TextBox>
             <TextBox Name="lapaisypros15" Height="21" Width="68" Canvas.Left="274" Canvas.Top="417" IsReadOnly="True" Background="#ffccb3"></TextBox>
             <TextBox Name="lapaisypros16" Height="21" Width="68" Canvas.Left="274" Canvas.Top="443" IsReadOnly="True" Background="#ffccb3"></TextBox>
-            
+
             <!--Laske nappi-->
             <Button x:Name="CalculateValues" Height="32" Width="78" Canvas.Left="274" Canvas.Top="472">Laske</Button>
-            
+
             <!--Ohjealue-->
             <Label Content="Seula #mm" Canvas.Left="633" Canvas.Top="21"></Label>
+            <!--Seulat-->
+            <TextBox Name="seulaValue1" Height="21" Width="68" Canvas.Top="47" IsReadOnly="True" Canvas.Left="633"></TextBox>
+            <TextBox Name="seulaValue2" Height="21" Width="68" Canvas.Top="73" IsReadOnly="True" Canvas.Left="633"></TextBox>
+            <TextBox Name="seulaValue3" Height="21" Width="68" Canvas.Top="99" IsReadOnly="True" Canvas.Left="633"></TextBox>
+            <TextBox Name="seulaValue4" Height="21" Width="68" Canvas.Top="125" IsReadOnly="True" Canvas.Left="633"></TextBox>
+            <TextBox Name="seulaValue5" Height="21" Width="68" Canvas.Top="151" IsReadOnly="True" Canvas.Left="633"></TextBox>
+            <TextBox Name="seulaValue6" Height="21" Width="68" Canvas.Top="177" IsReadOnly="True" Canvas.Left="633"></TextBox>
+            <TextBox Name="seulaValue7" Height="21" Width="68" Canvas.Top="203" IsReadOnly="True" Canvas.Left="633"></TextBox>
+            <TextBox Name="seulaValue8" Height="21" Width="68" Canvas.Top="229" IsReadOnly="True" Canvas.Left="633"></TextBox>
+            <TextBox Name="seulaValue9" Height="21" Width="68" Canvas.Top="255" IsReadOnly="True" Canvas.Left="633"></TextBox>
+            <TextBox Name="seulaValue10" Height="21" Width="68" Canvas.Top="281" IsReadOnly="True" Canvas.Left="633"></TextBox>
+            <TextBox Name="seulaValue11" Height="21" Width="68" Canvas.Top="307" IsReadOnly="True" Canvas.Left="633"></TextBox>
+            <TextBox Name="seulaValue12" Height="21" Width="68" Canvas.Top="333" IsReadOnly="True" Canvas.Left="633"></TextBox>
+            <TextBox Name="seulaValue13" Height="21" Width="68" Canvas.Top="359" IsReadOnly="True" Canvas.Left="633"></TextBox>
+            <TextBox Name="seulaValue14" Height="21" Width="68" Canvas.Top="385" IsReadOnly="True" Canvas.Left="633"></TextBox>
+            <TextBox Name="seulaValue15" Height="21" Width="68" Canvas.Top="411" IsReadOnly="True" Canvas.Left="633"></TextBox>
+            <TextBox Name="seulaValue16" Height="21" Width="68" Canvas.Top="437" IsReadOnly="True" Canvas.Left="633"></TextBox>
+
+            <!--Alarajay-->
+            <Label Content="Alaraja" Canvas.Left="809" Canvas.Top="21"></Label>
+            <TextBox Name="alaRajaValue1" Height="21" Width="68" Canvas.Top="47" Canvas.Left="799"></TextBox>
+            <TextBox Name="alaRajaValue2" Height="21" Width="68" Canvas.Top="73" Canvas.Left="799"></TextBox>
+            <TextBox Name="alaRajaValue3" Height="21" Width="68" Canvas.Top="99" Canvas.Left="799"></TextBox>
+            <TextBox Name="alaRajaValue4" Height="21" Width="68" Canvas.Top="125" Canvas.Left="799"></TextBox>
+            <TextBox Name="alaRajaValue5" Height="21" Width="68" Canvas.Top="151" Canvas.Left="799"></TextBox>
+            <TextBox Name="alaRajaValue6" Height="21" Width="68" Canvas.Top="177" Canvas.Left="799"></TextBox>
+            <TextBox Name="alaRajaValue7" Height="21" Width="68" Canvas.Top="203" Canvas.Left="799"></TextBox>
+            <TextBox Name="alaRajaValue8" Height="21" Width="68" Canvas.Top="229" Canvas.Left="799"></TextBox>
+            <TextBox Name="alaRajaValue9" Height="21" Width="68" Canvas.Top="255" Canvas.Left="799"></TextBox>
+            <TextBox Name="alaRajaValue10" Height="21" Width="68" Canvas.Top="281" Canvas.Left="799"></TextBox>
+            <TextBox Name="alaRajaValue11" Height="21" Width="68" Canvas.Top="307" Canvas.Left="799"></TextBox>
+            <TextBox Name="alaRajaValue12" Height="21" Width="68" Canvas.Top="333" Canvas.Left="799"></TextBox>
+            <TextBox Name="alaRajaValue13" Height="21" Width="68" Canvas.Top="359" Canvas.Left="799"></TextBox>
+            <TextBox Name="alaRajaValue14" Height="21" Width="68" Canvas.Top="385" Canvas.Left="799"></TextBox>
+            <TextBox Name="alaRajaValue15" Height="21" Width="68" Canvas.Top="411" Canvas.Left="799"></TextBox>
+            <TextBox Name="alaRajaValue16" Height="21" Width="68" Canvas.Top="437" Canvas.Left="799"></TextBox>
+
+            <!--Ylärajat-->
+            <Label Content="Yläraja" Canvas.Left="981" Canvas.Top="21"></Label>
+            <TextBox Name="ylaRajaValue1" Height="21" Width="68" Canvas.Top="47" Canvas.Left="971"></TextBox>
+            <TextBox Name="ylaRajaValue2" Height="21" Width="68" Canvas.Top="73" Canvas.Left="971"></TextBox>
+            <TextBox Name="ylaRajaValue3" Height="21" Width="68" Canvas.Top="99" Canvas.Left="971"></TextBox>
+            <TextBox Name="ylaRajaValue4" Height="21" Width="68" Canvas.Top="125" Canvas.Left="971"></TextBox>
+            <TextBox Name="ylaRajaValue5" Height="21" Width="68" Canvas.Top="151" Canvas.Left="971"></TextBox>
+            <TextBox Name="ylaRajaValue6" Height="21" Width="68" Canvas.Top="177" Canvas.Left="971"></TextBox>
+            <TextBox Name="ylaRajaValue7" Height="21" Width="68" Canvas.Top="203" Canvas.Left="971"></TextBox>
+            <TextBox Name="ylaRajaValue8" Height="21" Width="68" Canvas.Top="229" Canvas.Left="971"></TextBox>
+            <TextBox Name="ylaRajaValue9" Height="21" Width="68" Canvas.Top="255" Canvas.Left="971"></TextBox>
+            <TextBox Name="ylaRajaValue10" Height="21" Width="68" Canvas.Top="281" Canvas.Left="971"></TextBox>
+            <TextBox Name="ylaRajaValue11" Height="21" Width="68" Canvas.Top="307" Canvas.Left="971"></TextBox>
+            <TextBox Name="ylaRajaValue12" Height="21" Width="68" Canvas.Top="333" Canvas.Left="971"></TextBox>
+            <TextBox Name="ylaRajaValue13" Height="21" Width="68" Canvas.Top="359" Canvas.Left="971"></TextBox>
+            <TextBox Name="ylaRajaValue14" Height="21" Width="68" Canvas.Top="385" Canvas.Left="971"></TextBox>
+            <TextBox Name="ylaRajaValue15" Height="21" Width="68" Canvas.Top="411" Canvas.Left="971"></TextBox>
+            <TextBox Name="ylaRajaValue16" Height="21" Width="68" Canvas.Top="437" Canvas.Left="971"></TextBox>
+
+
         </Canvas>
     </Canvas>
 </Window>
