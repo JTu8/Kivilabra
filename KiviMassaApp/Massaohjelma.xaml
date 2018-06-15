@@ -244,7 +244,7 @@
             <TextBox Name="seulaValue15" Height="21" Width="68" Canvas.Top="411" IsReadOnly="True" Canvas.Left="633"></TextBox>
             <TextBox Name="seulaValue16" Height="21" Width="68" Canvas.Top="437" IsReadOnly="True" Canvas.Left="633"></TextBox>
 
-            <!--Alarajay-->
+            <!--Alarajat-->
             <Label Content="Alaraja" Canvas.Left="809" Canvas.Top="21"></Label>
             <TextBox Name="alaRajaValue1" Height="21" Width="68" Canvas.Top="47" Canvas.Left="799"></TextBox>
             <TextBox Name="alaRajaValue2" Height="21" Width="68" Canvas.Top="73" Canvas.Left="799"></TextBox>
