@@ -55,6 +55,7 @@ namespace KiviMassaApp
                         //Lisää ensimmäisen tuloksen tuloslistaan
 
                         tulos.Add(new SyotetytArvot() { index = ra.index, syote = (100 - (100 * ra.syote / m)) });
+                        //Console.WriteLine("Lisätään ensimmäinen luku");
                     }
                 }
                 else
@@ -70,6 +71,7 @@ namespace KiviMassaApp
                         {
                             //Lisää viimeisen tuloksen tuloslistaan, joka on aina 0 %
                             tulos.Add(new SyotetytArvot() { index = r[tulos.Count].index, syote = 0.0f });
+                            //Console.WriteLine("Lisätään viimeinen luku");
                         }
                     }
                 }

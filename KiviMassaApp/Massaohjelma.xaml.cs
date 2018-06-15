@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,6 +31,56 @@ namespace KiviMassaApp
         }
 
         private void Seula1_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void OpenFileDialog_Click(object sender, RoutedEventArgs e)
+        {
+            Open();
+        }
+
+        private void CommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Open();
+        }
+
+        private void Open()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Multiselect = true;
+            openFileDialog.Filter = "All files (*.*)|*.*|Text files (*.txt)|*.txt";
+            openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                //this.Cursor = new Cursor(openFileDialog.OpenFile());
+            }
+        }
+
+        private void CommandBinding_Executed_1(object sender, ExecutedRoutedEventArgs e)
+        {
+            Save();
+        }
+
+        private void SaveFiles_Click(object sender, RoutedEventArgs e)
+        {
+            Save();
+        }
+
+        private void Save()
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "All files (*.*)|*.*|Text files (*.txt)|*.txt";
+            saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+
+            }
+        }
+
+        private void btnLaskeSideainepitoisuus_Click(object sender, RoutedEventArgs e)
         {
 
         }

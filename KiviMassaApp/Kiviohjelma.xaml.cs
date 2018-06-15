@@ -147,126 +147,123 @@ namespace KiviMassaApp
             tbKosteuspros.Text = String.Empty;
             
         }
-
-        private void Seula1_DropDownClosed(object sender, EventArgs e)
+        private void btnTyhjennaOhjealueet_Click(object sender, RoutedEventArgs e)
         {
-            //Tarkoituksena laittaa valitut seulat ohjealueelle
-            //Console.WriteLine("Seula1 valinta: " + Seula1.Text);
-            /*if (Seula1.SelectedIndex == -1)
+            foreach (Control c in ohjeArvot.Children)
             {
-                seulaValue1.Text = string.Empty;
+                if (c.GetType() == typeof(TextBox))
+                {
+                    ((TextBox)c).Text = String.Empty;
+                }
             }
-            else
-            {*/
-                SeulaArvotOhjeArvoihin();
-                //seulaValue1.Text = Seula1.Text.Trim();
-            //}
-        }
-        private void Seula2_DropDownClosed(object sender, EventArgs e)
-        {
             SeulaArvotOhjeArvoihin();
         }
+
+
 
         private void btnLaske_Click(object sender, RoutedEventArgs e)
         {
             //Ottaa syötetyt tiedot talteen ja suorittaa laskutoimitukset niille
             EmptyResultFields(); //tyhjentää tuloskentät
+            int pyoristys = Convert.ToInt32(dbDesimaali.Text);
+            Console.WriteLine(pyoristys);
             List<SyotetytArvot> syotetytarvot = new List<SyotetytArvot>(); //Luo listan johon syötetyt arvot tallennetaan
             syotetytarvot = LuetaanSyotetytArvot(); //Luetaan syotetyt arvot luotuun listaan
-            double kokomassa = LaskeKokonaisMassa(syotetytarvot); //lasketaan arvojen kokonaismäärä
-            TulostenLasku_SeulalleJai(syotetytarvot, kokomassa); //Lasketaan laskutoimituksia ja syötetään tulokset tuloskenttiin
-            TulostenLasku_LapaisyProsentti(syotetytarvot,kokomassa);//--------||----------
+            double kokomassa = LaskeKokonaisMassa(syotetytarvot, pyoristys); //lasketaan arvojen kokonaismäärä
+            TulostenLasku_SeulalleJai(syotetytarvot, kokomassa, pyoristys); //Lasketaan laskutoimituksia ja syötetään tulokset tuloskenttiin
+            TulostenLasku_LapaisyProsentti(syotetytarvot,kokomassa, pyoristys);//--------||----------
             Laskut l = new Laskut();
             if(markapaino.Text != String.Empty)
             {
                 //Lasketaan kosteusprosentti jos märkäpaino-kentään on syötetty arvo
-                tbKosteuspros.Text = Math.Round(l.KosteusProsentti(kokomassa, Convert.ToDouble(markapaino.Text)), 1).ToString();
+                tbKosteuspros.Text = Math.Round(l.KosteusProsentti(kokomassa, Convert.ToDouble(markapaino.Text)), pyoristys).ToString();
             }
             
         }
 
         
 
-        private void TulostenLasku_LapaisyProsentti(List<SyotetytArvot> sa, double kokomassa)
+        private void TulostenLasku_LapaisyProsentti(List<SyotetytArvot> sa, double kokomassa, int pyoristys)
         {
             List<SyotetytArvot> tulos = new List<SyotetytArvot>();
             Laskut laskut = new Laskut();
             tulos = laskut.LapaisyProsentti(sa, kokomassa);
-            int l = 0;
+            //int l = 0;
             foreach(SyotetytArvot s in tulos)
             {
                 switch (s.index)
                 {
                     case 1:
-                        lapaisypros1.Text = Math.Round(Convert.ToDouble(tulos[l].syote), 1).ToString();
-                        l++;
+                        lapaisypros1.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
+                        //l++;
                         break;
                     case 2:
-                        lapaisypros2.Text = Math.Round(Convert.ToDouble(tulos[l].syote), 1).ToString();
-                        l++;
+                        lapaisypros2.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
+                        //l++;
                         break;
                     case 3:
-                        lapaisypros3.Text = Math.Round(Convert.ToDouble(tulos[l].syote), 1).ToString();
-                        l++;
+                        lapaisypros3.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
+                        //l++;
                         break;
                     case 4:
-                        lapaisypros4.Text = Math.Round(Convert.ToDouble(tulos[l].syote), 1).ToString();
-                        l++;
+                        lapaisypros4.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
+                        //l++;
                         break;
                     case 5:
-                        lapaisypros5.Text = Math.Round(Convert.ToDouble(tulos[l].syote), 1).ToString();
-                        l++;
+                        lapaisypros5.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
+                        //l++;
                         break;
                     case 6:
-                        lapaisypros6.Text = Math.Round(Convert.ToDouble(tulos[l].syote), 1).ToString();
-                        l++;
+                        lapaisypros6.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
+                        //l++;
                         break;
                     case 7:
-                        lapaisypros7.Text = Math.Round(Convert.ToDouble(tulos[l].syote), 1).ToString();
+                        lapaisypros7.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
+                        //l++
                         break;
                     case 8:
-                        lapaisypros8.Text = Math.Round(Convert.ToDouble(tulos[l].syote), 1).ToString();
-                        l++;
+                        lapaisypros8.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
+                        //l++;
                         break;
                     case 9:
-                        lapaisypros9.Text = Math.Round(Convert.ToDouble(tulos[l].syote), 1).ToString();
-                        l++;
+                        lapaisypros9.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
+                        //l++;
                         break;
                     case 10:
-                        lapaisypros10.Text = Math.Round(Convert.ToDouble(tulos[l].syote), 1).ToString();
-                        l++;
+                        lapaisypros10.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
+                        //l++;
                         break;
                     case 11:
-                        lapaisypros11.Text = Math.Round(Convert.ToDouble(tulos[l].syote), 1).ToString();
-                        l++;
+                        lapaisypros11.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
+                        //l++;
                         break;
                     case 12:
-                        lapaisypros12.Text = Math.Round(Convert.ToDouble(tulos[l].syote), 1).ToString();
-                        l++;
+                        lapaisypros12.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
+                        //l++;
                         break;
                     case 13:
-                        lapaisypros13.Text = Math.Round(Convert.ToDouble(tulos[l].syote), 1).ToString();
-                        l++;
+                        lapaisypros13.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
+                        //l++;
                         break;
                     case 14:
-                        lapaisypros14.Text = Math.Round(Convert.ToDouble(tulos[l].syote), 1).ToString();
-                        l++;
+                        lapaisypros14.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
+                        //l++;
                         break;
                     case 15:
-                        lapaisypros15.Text = Math.Round(Convert.ToDouble(tulos[l].syote), 1).ToString();
-                        l++;
+                        lapaisypros15.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
+                        //l++;
                         break;
                     case 16:
-                        lapaisypros16.Text = Math.Round(Convert.ToDouble(tulos[l].syote), 1).ToString();
-                        l++;
+                        lapaisypros16.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
+                        //l++;
                         break;
                     case 17:
-                        lapaisypros17.Text = Math.Round(Convert.ToDouble(tulos[l].syote), 1).ToString();
-                        l++;
+                        lapaisypros17.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
+                        //l++;
                         break;
                     case 18:
-                        lapaisypros18.Text = Math.Round(Convert.ToDouble(tulos[l].syote), 1).ToString();
-                        l++;
+                        lapaisypros18.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
+                        //l++;
                         break;
                     default:
                         {
@@ -278,13 +275,13 @@ namespace KiviMassaApp
 
         }
 
-        private void TulostenLasku_SeulalleJai(List<SyotetytArvot> sa, double kokomassa)
+        private void TulostenLasku_SeulalleJai(List<SyotetytArvot> sa, double kokomassa, int pyoristys)
         {
             for (int l = 0; l < sa.Count; l++)
             {
                 //otetaan yksi tulos talteen
                 Laskut laskut = new Laskut();
-                double tulos = Math.Round(laskut.seulalleJai(Convert.ToDouble(sa[l].syote), kokomassa), 1);
+                double tulos = Math.Round(laskut.seulalleJai(Convert.ToDouble(sa[l].syote), kokomassa), pyoristys);
                 //TODO: Pyöristys kovakoodattu, muokkaa joskus
 
                 //Console.WriteLine("Seulaindex: " + sa[l].index + "      " + tulos.ToString());
@@ -358,7 +355,7 @@ namespace KiviMassaApp
             }
         }
 
-        private double LaskeKokonaisMassa(List<SyotetytArvot> sa)
+        private double LaskeKokonaisMassa(List<SyotetytArvot> sa, int pyoristys)
         {
             //laskee syotettyjen arvojen kokonaismassan
             double kokomassa = 0;
@@ -366,8 +363,8 @@ namespace KiviMassaApp
             {
                 kokomassa += Convert.ToDouble(se.syote);
             }
-            punnittuYhteensa.Text = Math.Round(kokomassa, 2).ToString();
-            return Math.Round(kokomassa,2);
+            punnittuYhteensa.Text = Math.Round(kokomassa, pyoristys).ToString();
+            return Math.Round(kokomassa,pyoristys);
         }
 
 
@@ -576,11 +573,138 @@ namespace KiviMassaApp
             e.Handled = !regex.IsMatch(e.Text);
         }
 
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        private void CommandBinding_Open(object sender, ExecutedRoutedEventArgs e) //Näppäinkomento joka avaa File Expolorerin
         {
+            Open();
+        }
+
+        private void Open() //Avaa File Expolorerin
+        {
+            Stream stream = null;
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Multiselect = true;
-            openFileDialog.ShowDialog();
+            openFileDialog.Filter = "All files (*.*)|*.*|Text files (*.txt)|*.txt";
+            openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                try
+                {
+                    if ((stream = openFileDialog.OpenFile()) != null)
+                    {
+                        using (stream)
+                        {
+
+                        }
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Tiedoston avaaminen epäonnistui" + ex.Message);
+                }
+            }
+
+
         }
+
+        private void SaveFile_Click(object sender, RoutedEventArgs e)
+        {
+            Save();
+        }
+
+        private void Save()
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "All files (*.*)|*.*|Text files (*.txt)|*.txt";
+            saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+
+            }
+        }
+
+        private void CommandBinding_Save(object sender, ExecutedRoutedEventArgs e)
+        {
+            Save();
+        }
+
+        private void Seula1_DropDownClosed(object sender, EventArgs e)
+        {
+            //Tarkoituksena laittaa valitut seulat ohjealueelle
+            //Console.WriteLine("Seula1 valinta: " + Seula1.Text);
+            SeulaArvotOhjeArvoihin();
+        }
+        private void Seula2_DropDownClosed(object sender, EventArgs e)
+        {
+            SeulaArvotOhjeArvoihin();
+        }
+        private void Seula3_DropDownClosed(object sender, EventArgs e)
+        {
+            SeulaArvotOhjeArvoihin();
+        }
+        private void Seula4_DropDownClosed(object sender, EventArgs e)
+        {
+            SeulaArvotOhjeArvoihin();
+        }
+        private void Seula5_DropDownClosed(object sender, EventArgs e)
+        {
+            SeulaArvotOhjeArvoihin();
+        }
+        private void Seula6_DropDownClosed(object sender, EventArgs e)
+        {
+            SeulaArvotOhjeArvoihin();
+        }
+        private void Seula7_DropDownClosed(object sender, EventArgs e)
+        {
+            SeulaArvotOhjeArvoihin();
+        }
+        private void Seula8_DropDownClosed(object sender, EventArgs e)
+        {
+            SeulaArvotOhjeArvoihin();
+        }
+        private void Seula9_DropDownClosed(object sender, EventArgs e)
+        {
+            SeulaArvotOhjeArvoihin();
+        }
+        private void Seula10_DropDownClosed(object sender, EventArgs e)
+        {
+            SeulaArvotOhjeArvoihin();
+        }
+        private void Seula11_DropDownClosed(object sender, EventArgs e)
+        {
+            SeulaArvotOhjeArvoihin();
+        }
+        private void Seula12_DropDownClosed(object sender, EventArgs e)
+        {
+            SeulaArvotOhjeArvoihin();
+        }
+        private void Seula13_DropDownClosed(object sender, EventArgs e)
+        {
+            SeulaArvotOhjeArvoihin();
+        }
+        private void Seula14_DropDownClosed(object sender, EventArgs e)
+        {
+            SeulaArvotOhjeArvoihin();
+        }
+        private void Seula15_DropDownClosed(object sender, EventArgs e)
+        {
+            SeulaArvotOhjeArvoihin();
+        }
+        private void Seula16_DropDownClosed(object sender, EventArgs e)
+        {
+            SeulaArvotOhjeArvoihin();
+        }
+        private void Seula17_DropDownClosed(object sender, EventArgs e)
+        {
+            SeulaArvotOhjeArvoihin();
+        }
+        private void Seula18_DropDownClosed(object sender, EventArgs e)
+        {
+            SeulaArvotOhjeArvoihin();
+        }
+
+        
     }
 }

@@ -14,8 +14,8 @@
         <DockPanel>
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="Tiedosto">
-                    <MenuItem Header="Avaa"></MenuItem>
-                    <MenuItem Header="Tallenna"></MenuItem>
+                    <MenuItem x:Name="OpenFileDialog" Header="Avaa" Command="Open" InputGestureText="Ctrl + O"></MenuItem>
+                    <MenuItem x:Name="SaveFiles" Header="Tallenna" Command="Save" InputGestureText="Ctrl + S"></MenuItem>
                 </MenuItem>
                 <MenuItem Header="Kopioi tiedot">
 
@@ -74,6 +74,7 @@
 
             <Label Content="Sideainepitoisuus %:" Canvas.Top="125"></Label>
             <TextBox Name="sideainepitoisuus" Canvas.Left="154" Height="21" Width="121" Canvas.Top="130"/>
+            <Button x:Name="btnLaskeSideainepitoisuus" Canvas.Left="291" Canvas.Top="128" Width="75" Click="btnLaskeSideainepitoisuus_Click" Content="Laske"/>
         </Canvas>
 
         <!--Ohjearvot-->
