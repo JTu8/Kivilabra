@@ -40,7 +40,7 @@ namespace KiviMassaApp
             Open();
         }
 
-        private void CommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        private void CommandBinding_Open(object sender, ExecutedRoutedEventArgs e)
         {
             Open();
         }
@@ -58,7 +58,7 @@ namespace KiviMassaApp
             }
         }
 
-        private void CommandBinding_Executed_1(object sender, ExecutedRoutedEventArgs e)
+        private void CommandBinding_Save(object sender, ExecutedRoutedEventArgs e)
         {
             Save();
         }
@@ -76,13 +76,36 @@ namespace KiviMassaApp
 
             if (saveFileDialog.ShowDialog() == true)
             {
+                System.IO.FileStream fs = (System.IO.FileStream)saveFileDialog.OpenFile();
 
+                fs.Close();
             }
+        }
+
+        private void CommandBinding_Print(object sender, ExecutedRoutedEventArgs e)
+        {
+            PrintFile();
+        }
+
+        private void Print_Click(object sender, RoutedEventArgs e)
+        {
+            PrintFile();
+        }
+
+        private void PrintFile()
+        {
+            PrintDialog printDialog = new PrintDialog();
+            printDialog.ShowDialog();
         }
 
         private void btnLaskeSideainepitoisuus_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void ExitProgram_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 }

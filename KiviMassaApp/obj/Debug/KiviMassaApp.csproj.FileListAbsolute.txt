@@ -80,3 +80,5 @@ Z:\Harjoittelu 2018\Koodia\Kivilabra-masterV3_15.6.2018\KiviMassaApp\obj\Debug\K
 Z:\Harjoittelu 2018\Koodia\Kivilabra-masterV3_15.6.2018\KiviMassaApp\obj\Debug\KiviMassaApp.csproj.CoreCompileInputs.cache
 Z:\Harjoittelu 2018\Koodia\Kivilabra-masterV3_15.6.2018\KiviMassaApp\obj\Debug\KiviMassaApp.exe
 Z:\Harjoittelu 2018\Koodia\Kivilabra-masterV3_15.6.2018\KiviMassaApp\obj\Debug\KiviMassaApp.pdb
+Z:\Harjoittelu2\KiviMassaApp\KiviMassaApp\bin\Debug\Newtonsoft.Json.dll
+Z:\Harjoittelu2\KiviMassaApp\KiviMassaApp\bin\Debug\Newtonsoft.Json.xml

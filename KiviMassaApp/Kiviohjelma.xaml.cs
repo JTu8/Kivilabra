@@ -621,13 +621,31 @@ namespace KiviMassaApp
 
             if (saveFileDialog.ShowDialog() == true)
             {
+                System.IO.FileStream fs = (System.IO.FileStream)saveFileDialog.OpenFile();
 
+                fs.Close();
             }
         }
 
         private void CommandBinding_Save(object sender, ExecutedRoutedEventArgs e)
         {
             Save();
+        }
+
+        private void CommandBinding_Print(object sender, ExecutedRoutedEventArgs e)
+        {
+            PrintFile();
+        }
+
+        private void Print_Click(object sender, RoutedEventArgs e)
+        {
+            PrintFile();
+        }
+
+        private void PrintFile()
+        {
+            PrintDialog printDialog = new PrintDialog();
+            printDialog.ShowDialog();
         }
 
         private void Seula1_DropDownClosed(object sender, EventArgs e)
@@ -706,5 +724,10 @@ namespace KiviMassaApp
         }
 
         
+
+        private void ExitProgram_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
     }
 }

@@ -14,10 +14,12 @@
     <Window.CommandBindings>
         <CommandBinding Command="Open" Executed="CommandBinding_Open"></CommandBinding>
         <CommandBinding Command="Save" Executed="CommandBinding_Save"></CommandBinding>
+        <CommandBinding Command="Print" Executed="CommandBinding_Print"></CommandBinding>
     </Window.CommandBindings>
     <Window.InputBindings>
         <KeyBinding Key="O" Modifiers="Ctrl" Command="Open"></KeyBinding>
         <KeyBinding Key="S" Modifiers="Ctrl" Command="Save"></KeyBinding>
+        <KeyBinding Key="P" Modifiers="Ctrl" Command="Print"></KeyBinding>
     </Window.InputBindings>
     
     <Canvas Width="2170" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,200,1000">
@@ -28,6 +30,8 @@
                     <MenuItem Header="Tiedosto">
                         <MenuItem x:Name="OpenFileExplorer" Header="Avaa" Command="Open" InputGestureText="Ctrl + O"></MenuItem>
                         <MenuItem x:Name="SaveFile" Header="Tallenna" Command="Save" InputGestureText="Ctrl + S"></MenuItem>
+                        <MenuItem x:Name="Print" Header="Tulosta" Command="Print" InputGestureText="Ctrl + P"></MenuItem>
+                        <MenuItem x:Name="ExitProgram" Header="Lopeta" Click="ExitProgram_Click"></MenuItem>
                     </MenuItem>
                     <MenuItem Header="Syötä">
 

@@ -9,6 +9,19 @@
         WindowState="Maximized"
         HorizontalAlignment="Stretch"
         VerticalAlignment="Stretch">
+    
+    <!--Näppäinkomennot-->
+    <Window.CommandBindings>
+        <CommandBinding Command="Open" Executed="CommandBinding_Open"></CommandBinding>
+        <CommandBinding Command="Save" Executed="CommandBinding_Save"></CommandBinding>
+        <CommandBinding Command="Print" Executed="CommandBinding_Print"></CommandBinding>
+    </Window.CommandBindings>
+    <Window.InputBindings>
+        <KeyBinding Key="O" Modifiers="Ctrl" Command="Open"></KeyBinding>
+        <KeyBinding Key="S" Modifiers="Ctrl" Command="Save"></KeyBinding>
+        <KeyBinding Key="P" Modifiers="Ctrl" Command="Print"></KeyBinding>
+    </Window.InputBindings>
+    
     <!--Menuvalikko-->
     <Canvas Height="20" Canvas.Top="-262" Width="370" Canvas.Left="-6" Margin="0,0,1552,1045">
         <DockPanel>
@@ -16,6 +29,8 @@
                 <MenuItem Header="Tiedosto">
                     <MenuItem x:Name="OpenFileDialog" Header="Avaa" Command="Open" InputGestureText="Ctrl + O"></MenuItem>
                     <MenuItem x:Name="SaveFiles" Header="Tallenna" Command="Save" InputGestureText="Ctrl + S"></MenuItem>
+                    <MenuItem x:Name="Print" Header="Tulosta" Command="Print" InputGestureText="Ctrl + P"></MenuItem>
+                    <MenuItem x:Name="ExitProgram" Header="Lopeta" Click="ExitProgram_Click"></MenuItem>
                 </MenuItem>
                 <MenuItem Header="Kopioi tiedot">
 
