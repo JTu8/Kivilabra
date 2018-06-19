@@ -24,6 +24,18 @@ namespace KiviMassaApp
         {
             InitializeComponent();
         }
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            MainWindow m = new MainWindow();
+            m.SuljeIkkuna("massa");
+           
+        }
+
+        private void LaskeSeula_Click(object sender, RoutedEventArgs e)
+        {
+            //Suoritetaan seulalaskut tässä
+        }
+
 
         private void paallyste_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -58,6 +70,7 @@ namespace KiviMassaApp
             }
         }
 
+
         private void CommandBinding_Save(object sender, ExecutedRoutedEventArgs e)
         {
             Save();
@@ -81,7 +94,6 @@ namespace KiviMassaApp
                 fs.Close();
             }
         }
-
         private void CommandBinding_Print(object sender, ExecutedRoutedEventArgs e)
         {
             PrintFile();
@@ -97,14 +109,19 @@ namespace KiviMassaApp
             PrintDialog printDialog = new PrintDialog();
             printDialog.ShowDialog();
         }
-
         private void btnLaskeSideainepitoisuus_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnTyhjennaOhjeAlue_Click(object sender, RoutedEventArgs e)
         {
 
         }
 
         private void ExitProgram_Click(object sender, RoutedEventArgs e)
         {
+            //Sulkee ikkunan
             this.Close();
         }
     }

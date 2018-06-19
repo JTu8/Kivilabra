@@ -6,9 +6,10 @@
         xmlns:local="clr-namespace:KiviMassaApp"
         mc:Ignorable="d"
         Title="KiviMassaApp" Height="350" Width="525">
-    <Grid>
-        <Button Content="Kiviohjelma" HorizontalAlignment="Left" Margin="180,91,0,0" VerticalAlignment="Top" Width="155" Height="41" Click="OpenKivi"/>
-        <Button Content="Massaohjelma" HorizontalAlignment="Left" Margin="180,137,0,0" VerticalAlignment="Top" Width="155" Height="44" Click="OpenMassa"/>
+    <Grid Width="518">
+        <Button Content="Kiviohjelma" Margin="182,91,182,0" VerticalAlignment="Top" Height="41" Click="OpenKivi" Width="154"/>
+        <Button Content="Massaohjelma" Margin="182,137,182,0" VerticalAlignment="Top" Height="44" Click="OpenMassa"/>
+        <Button x:Name="btnSeulalista" Content="Muokkaa seuloja" Margin="203,0,203,97" VerticalAlignment="Bottom" Height="22" Click="OpenSeula"/>
 
     </Grid>
 </Window>

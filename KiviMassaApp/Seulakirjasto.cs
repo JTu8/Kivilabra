@@ -9,6 +9,6 @@ namespace KiviMassaApp
     public class Seulakirjasto
     {
         public int index { get; set; }
-        public float seula { get; set; }
+        public double seula { get; set; }
     }
 }

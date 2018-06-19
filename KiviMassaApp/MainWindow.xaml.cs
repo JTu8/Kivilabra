@@ -24,17 +24,66 @@ namespace KiviMassaApp
         {
             InitializeComponent();
         }
+        private Window _kivi = null, _massa = null, _seula = null;
 
         private void OpenKivi(object sender, RoutedEventArgs e) //Avaa kiviohjelman
         {
-            Kiviohjelma k = new Kiviohjelma();
-            k.Show();
+            Console.WriteLine("Kivi avattu");
+            
+            if (_kivi == null)
+            {
+                _kivi = new Kiviohjelma(this);
+                _kivi.Show();
+            }
+            else
+            {
+                _kivi.Activate();
+            }
+            Console.WriteLine(_kivi);
         }
 
         private void OpenMassa(object sender, RoutedEventArgs e) //Avaa massaohjelman
         {
-            Massaohjelma m = new Massaohjelma();
-            m.Show();
+            if (_massa == null)
+            {
+                _massa = new Massaohjelma();
+                _massa.Show();
+            }
+            else
+            {
+                _massa.Activate();
+            }
+           
+        }
+
+        private void OpenSeula(object sender, RoutedEventArgs e)
+        {
+            if(_seula == null)
+            {
+                _seula = new SeulaMuokkausIkkuna(this);
+                _seula.Show();
+            }
+            else
+            {
+                _seula.Activate();
+            }
+        }
+
+        public void SuljeIkkuna(string nimi)
+        {
+            switch (nimi) {
+                case "kivi":
+                    _kivi = null;
+                    break;
+                case "massa":
+                    _massa = null;
+                    break;
+                case "seula":
+                    _seula = null;
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

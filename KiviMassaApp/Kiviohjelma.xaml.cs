@@ -23,20 +23,25 @@ namespace KiviMassaApp
     /// </summary>
     public partial class Kiviohjelma : Window
     {
+        MainWindow _main;
         List<Seulakirjasto> seulalista = new List<Seulakirjasto>();
-        public Kiviohjelma()
+        public Kiviohjelma(Window main)
         {
             InitializeComponent();
-            SeulaArvotOhjeArvoihin();
-            SeulaJsonLataus();
+            _main = (MainWindow)main; //Otetaan aloitusikkuna talteen
+            SeulaArvotOhjeArvoihin(); //Laitetaan valitut seula-arvot Ohjealue-ruudun seulakenttiin
+            SeulaJsonLataus(); //Ladataan Seulat.json tiedostosta kaikki seula-arvot talteen seulalistaan
+        }
+        private void Kiviohjelma_Closed(object sender, EventArgs e)
+        {
+            //kertoo aloitusikkunalle että ohjelma on suljettu
+            //käytetään siihen että ei voi olla useampi kiviohjelma käynnissä yhtä aikaa
+            _main.SuljeIkkuna("kivi");
         }
 
-        /*private void Button_Click(object sender, RoutedEventArgs e)
-        {
-
-        }*/
         private void SeulaArvotOhjeArvoihin()
         {
+            //Kopioi valitut seula-arvot Ohjealue-ruudun seulakenttiin
             seulaValue1.Text = Seula1.Text.Trim();
             seulaValue2.Text = Seula2.Text.Trim();
             seulaValue3.Text = Seula3.Text.Trim();
@@ -61,12 +66,11 @@ namespace KiviMassaApp
         private void EmptyFields_Click(object sender, RoutedEventArgs e) //Tyhjennä napin funktio
         {
 
-            EmptyGramFields(); //Kutsuu funktiota mikä tyhjentää seulalle jääneet gramma arvot
-            EmptyResultFields(); //Tyhjentää tulosruuduissa olevat arvot
+            EmptyFields(); //Kutsuu funktiota mikä tyhjentää kaikki tekstikentät seulalaskenta-ruudusta
             
         }
 
-        private void EmptyGramFields() //Funktio mikä tyhjentää seulalle jääneet gramma arvot
+        private void EmptyFields() //Funktio mikä tyhjentää kaikki tekstikentät seulalaskenta-ruudusta
         {
 
             foreach (Control c in seulaArvot.Children)
@@ -76,79 +80,11 @@ namespace KiviMassaApp
                     ((TextBox)c).Text = String.Empty;
                 }
             }
-
-            /*
-            seulaG0.Text = String.Empty;
-            seulaG1.Text = String.Empty;
-            seulaG2.Text = String.Empty;
-            seulaG3.Text = String.Empty;
-            seulaG4.Text = String.Empty;
-            seulaG5.Text = String.Empty;
-            seulaG6.Text = String.Empty;
-            seulaG7.Text = String.Empty;
-            seulaG7.Text = String.Empty;
-            seulaG8.Text = String.Empty;
-            seulaG9.Text = String.Empty;
-            seulaG10.Text = String.Empty;
-            seulaG11.Text = String.Empty;
-            seulaG12.Text = String.Empty;
-            seulaG13.Text = String.Empty;
-            seulaG14.Text = String.Empty;
-            seulaG15.Text = String.Empty;
-            seulaG16.Text = String.Empty;
-            seulaG17.Text = String.Empty;
-            markapaino.Text = String.Empty;
-
-            */
         }
-        private void EmptyResultFields() //Tyhjentää tulosruuduissa olevat arvot
-        {
-            
-            seulapros1.Text = String.Empty;
-            seulapros2.Text = String.Empty;
-            seulapros3.Text = String.Empty;
-            seulapros4.Text = String.Empty;
-            seulapros5.Text = String.Empty;
-            seulapros6.Text = String.Empty;
-            seulapros7.Text = String.Empty;
-            seulapros8.Text = String.Empty;
-            seulapros9.Text = String.Empty;
-            seulapros10.Text = String.Empty;
-            seulapros11.Text = String.Empty;
-            seulapros12.Text = String.Empty;
-            seulapros13.Text = String.Empty;
-            seulapros14.Text = String.Empty;
-            seulapros15.Text = String.Empty;
-            seulapros16.Text = String.Empty;
-            seulapros17.Text = String.Empty;
-            seulapros18.Text = String.Empty;
-            seulapros19.Text = String.Empty;
 
-            lapaisypros1.Text = String.Empty;
-            lapaisypros2.Text = String.Empty;
-            lapaisypros3.Text = String.Empty;
-            lapaisypros4.Text = String.Empty;
-            lapaisypros5.Text = String.Empty;
-            lapaisypros6.Text = String.Empty;
-            lapaisypros7.Text = String.Empty;
-            lapaisypros8.Text = String.Empty;
-            lapaisypros9.Text = String.Empty;
-            lapaisypros10.Text = String.Empty;
-            lapaisypros11.Text = String.Empty;
-            lapaisypros12.Text = String.Empty;
-            lapaisypros13.Text = String.Empty;
-            lapaisypros14.Text = String.Empty;
-            lapaisypros15.Text = String.Empty;
-            lapaisypros16.Text = String.Empty;
-            lapaisypros17.Text = String.Empty;
-            lapaisypros18.Text = String.Empty;
-
-            punnittuYhteensa.Text = String.Empty;
-            tbKosteuspros.Text = String.Empty;
-            
-        }
         private void btnTyhjennaOhjealueet_Click(object sender, RoutedEventArgs e)
         {
+            //Tyhjentää Ohjealue-ruudusta kaikki tekstikentät
             foreach (Control c in ohjeArvot.Children)
             {
                 if (c.GetType() == typeof(TextBox))
@@ -156,6 +92,7 @@ namespace KiviMassaApp
                     ((TextBox)c).Text = String.Empty;
                 }
             }
+            //Laittaa seulat takaisin Ohjealue-ruutuun
             SeulaArvotOhjeArvoihin();
         }
 
@@ -164,9 +101,8 @@ namespace KiviMassaApp
         private void btnLaske_Click(object sender, RoutedEventArgs e)
         {
             //Ottaa syötetyt tiedot talteen ja suorittaa laskutoimitukset niille
-            EmptyResultFields(); //tyhjentää tuloskentät
-            int pyoristys = Convert.ToInt32(dbDesimaali.Text);
-            Console.WriteLine(pyoristys);
+            EmptyFields(); //tyhjentää tuloskentät
+            int pyoristys = Convert.ToInt32(dbDesimaali.Text);//Otetaan valittu pyöristysarvo ohjelmasta
             List<SyotetytArvot> syotetytarvot = new List<SyotetytArvot>(); //Luo listan johon syötetyt arvot tallennetaan
             syotetytarvot = LuetaanSyotetytArvot(); //Luetaan syotetyt arvot luotuun listaan
             double kokomassa = LaskeKokonaisMassa(syotetytarvot, pyoristys); //lasketaan arvojen kokonaismäärä
@@ -185,85 +121,70 @@ namespace KiviMassaApp
 
         private void TulostenLasku_LapaisyProsentti(List<SyotetytArvot> sa, double kokomassa, int pyoristys)
         {
+            //Luodaan lista jonne tulokset laitetaan
             List<SyotetytArvot> tulos = new List<SyotetytArvot>();
             Laskut laskut = new Laskut();
+            //Lasketaan ja syötetään tulokset tulos-listaan
             tulos = laskut.LapaisyProsentti(sa, kokomassa);
-            //int l = 0;
+            //Käydään lista läpi ja tulostetaan tulokset oikeille kentille
             foreach(SyotetytArvot s in tulos)
             {
                 switch (s.index)
                 {
                     case 1:
                         lapaisypros1.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
-                        //l++;
                         break;
                     case 2:
                         lapaisypros2.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
-                        //l++;
                         break;
                     case 3:
                         lapaisypros3.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
-                        //l++;
                         break;
                     case 4:
                         lapaisypros4.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
-                        //l++;
                         break;
                     case 5:
                         lapaisypros5.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
-                        //l++;
                         break;
                     case 6:
                         lapaisypros6.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
-                        //l++;
                         break;
                     case 7:
                         lapaisypros7.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
-                        //l++
                         break;
                     case 8:
                         lapaisypros8.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
-                        //l++;
                         break;
                     case 9:
                         lapaisypros9.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
-                        //l++;
                         break;
                     case 10:
                         lapaisypros10.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
-                        //l++;
                         break;
                     case 11:
                         lapaisypros11.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
-                        //l++;
+                        
                         break;
                     case 12:
                         lapaisypros12.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
-                        //l++;
                         break;
                     case 13:
                         lapaisypros13.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
-                        //l++;
                         break;
                     case 14:
                         lapaisypros14.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
-                        //l++;
                         break;
                     case 15:
                         lapaisypros15.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
-                        //l++;
                         break;
                     case 16:
                         lapaisypros16.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
-                        //l++;
                         break;
                     case 17:
                         lapaisypros17.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
-                        //l++;
                         break;
                     case 18:
                         lapaisypros18.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
-                        //l++;
                         break;
                     default:
                         {
@@ -279,12 +200,10 @@ namespace KiviMassaApp
         {
             for (int l = 0; l < sa.Count; l++)
             {
-                //otetaan yksi tulos talteen
+                //otetaan ja lasketaan yksi tulos
                 Laskut laskut = new Laskut();
                 double tulos = Math.Round(laskut.seulalleJai(Convert.ToDouble(sa[l].syote), kokomassa), pyoristys);
-                //TODO: Pyöristys kovakoodattu, muokkaa joskus
 
-                //Console.WriteLine("Seulaindex: " + sa[l].index + "      " + tulos.ToString());
                 //Valitaan oikea paikka tulokselle sen indeksin perusteella
                 switch (sa[l].index)
                 {
@@ -357,7 +276,8 @@ namespace KiviMassaApp
 
         private double LaskeKokonaisMassa(List<SyotetytArvot> sa, int pyoristys)
         {
-            //laskee syotettyjen arvojen kokonaismassan
+            //laskee syotettyjen arvojen kokonaismassan ja palauttaa sen
+            //Listassa on arvot jotka lasketaan yhteen, ja pyoristys-parametri kertoo kuinka tarkasti arvo pyöristetään
             double kokomassa = 0;
             foreach (SyotetytArvot se in sa)
             {
@@ -370,7 +290,8 @@ namespace KiviMassaApp
 
         private List<SyotetytArvot> LuetaanSyotetytArvot()
         {
-            //Lukee käyttäjän syöttämät arvot, lisää ne listaan ja palauttaa sen
+            //Lukee käyttäjän syöttämät arvot, lisää ne listaan ja palauttaa listan
+            //Syötetyissä arvoissa saattaa olla välejä (kaikkeja rivejä ei täytetty) joten koodi tarkistaa sen myös
             List<SyotetytArvot> sa = new List<SyotetytArvot>();
             double g0, g1, g2, g3, g4, g5, g6, g7, g8, g9, g10, g11, g12, g13, g14, g15, g16, g17,g18;
             try
@@ -538,7 +459,7 @@ namespace KiviMassaApp
         {
 
             //Tarkistetaan onko Seulat.json tiedostoa ja sen isäntäkansiota olemassa
-            //Jos on, luetaan seulatiedot tiedostosta
+            //Jos on, luetaan seulatiedot tiedostosta listaan
             //Jos ei, luodaan tiedosto ja kansio tarpeen mukaan ja luetaan seulat sitten.
             string seulajson;
             if (File.Exists(@".\Asetukset\Seulat.json") && Directory.Exists(@".\Asetukset"))
@@ -569,16 +490,18 @@ namespace KiviMassaApp
         }
         private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
         {
+            //Kun syötetään tietoja seulakenttiin, tämä funktio varmistaa että vain numeroita ja pilkkuja voi laittaa kenttiin
             Regex regex = new Regex("^[,][0-9]+$|^[0-9]*[,]{0,1}[0-9]*$");
             e.Handled = !regex.IsMatch(e.Text);
         }
 
-        private void CommandBinding_Open(object sender, ExecutedRoutedEventArgs e) //Näppäinkomento joka avaa File Expolorerin
+        private void CommandBinding_Open(object sender, ExecutedRoutedEventArgs e) 
         {
+            //Näppäinkomento joka avaa File Explorerin (Ctrl + O)
             Open();
         }
 
-        private void Open() //Avaa File Expolorerin
+        private void Open() //Avaa File Explorerin, jonka avulla ladataan tiedostoja
         {
             Stream stream = null;
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -610,18 +533,20 @@ namespace KiviMassaApp
 
         private void SaveFile_Click(object sender, RoutedEventArgs e)
         {
+            //Jos painaa tallennusnappia, kutsutaan tallennusfunktiota joka on alla
             Save();
         }
 
         private void Save()
         {
+            //Avataan tallennusdialogi ja tallennetaan tiedosto haluamaan sijaintiin
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "All files (*.*)|*.*|Text files (*.txt)|*.txt";
             saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
             if (saveFileDialog.ShowDialog() == true)
             {
-                System.IO.FileStream fs = (System.IO.FileStream)saveFileDialog.OpenFile();
+                FileStream fs = (FileStream)saveFileDialog.OpenFile();
 
                 fs.Close();
             }
@@ -629,105 +554,29 @@ namespace KiviMassaApp
 
         private void CommandBinding_Save(object sender, ExecutedRoutedEventArgs e)
         {
+            //kun painaa pikanäppäinyhdistelmää (Ctrl + S), avataan tallennusdialogi
             Save();
         }
-
         private void CommandBinding_Print(object sender, ExecutedRoutedEventArgs e)
         {
+            //Kun painaa pikanäppäinyhdistelmää (Ctrl + P), avataan tulostusdialogi
             PrintFile();
         }
-
-        private void Print_Click(object sender, RoutedEventArgs e)
-        {
-            PrintFile();
-        }
-
         private void PrintFile()
         {
+            //Avaa tulostusdialogin
             PrintDialog printDialog = new PrintDialog();
             printDialog.ShowDialog();
         }
-
-        private void Seula1_DropDownClosed(object sender, EventArgs e)
-        {
-            //Tarkoituksena laittaa valitut seulat ohjealueelle
-            //Console.WriteLine("Seula1 valinta: " + Seula1.Text);
-            SeulaArvotOhjeArvoihin();
-        }
-        private void Seula2_DropDownClosed(object sender, EventArgs e)
-        {
-            SeulaArvotOhjeArvoihin();
-        }
-        private void Seula3_DropDownClosed(object sender, EventArgs e)
-        {
-            SeulaArvotOhjeArvoihin();
-        }
-        private void Seula4_DropDownClosed(object sender, EventArgs e)
-        {
-            SeulaArvotOhjeArvoihin();
-        }
-        private void Seula5_DropDownClosed(object sender, EventArgs e)
-        {
-            SeulaArvotOhjeArvoihin();
-        }
-        private void Seula6_DropDownClosed(object sender, EventArgs e)
-        {
-            SeulaArvotOhjeArvoihin();
-        }
-        private void Seula7_DropDownClosed(object sender, EventArgs e)
-        {
-            SeulaArvotOhjeArvoihin();
-        }
-        private void Seula8_DropDownClosed(object sender, EventArgs e)
-        {
-            SeulaArvotOhjeArvoihin();
-        }
-        private void Seula9_DropDownClosed(object sender, EventArgs e)
-        {
-            SeulaArvotOhjeArvoihin();
-        }
-        private void Seula10_DropDownClosed(object sender, EventArgs e)
-        {
-            SeulaArvotOhjeArvoihin();
-        }
-        private void Seula11_DropDownClosed(object sender, EventArgs e)
-        {
-            SeulaArvotOhjeArvoihin();
-        }
-        private void Seula12_DropDownClosed(object sender, EventArgs e)
-        {
-            SeulaArvotOhjeArvoihin();
-        }
-        private void Seula13_DropDownClosed(object sender, EventArgs e)
-        {
-            SeulaArvotOhjeArvoihin();
-        }
-        private void Seula14_DropDownClosed(object sender, EventArgs e)
-        {
-            SeulaArvotOhjeArvoihin();
-        }
-        private void Seula15_DropDownClosed(object sender, EventArgs e)
-        {
-            SeulaArvotOhjeArvoihin();
-        }
-        private void Seula16_DropDownClosed(object sender, EventArgs e)
-        {
-            SeulaArvotOhjeArvoihin();
-        }
-        private void Seula17_DropDownClosed(object sender, EventArgs e)
-        {
-            SeulaArvotOhjeArvoihin();
-        }
-        private void Seula18_DropDownClosed(object sender, EventArgs e)
-        {
-            SeulaArvotOhjeArvoihin();
-        }
-
-        
-
         private void ExitProgram_Click(object sender, RoutedEventArgs e)
         {
+            //Sulkee ikkunan
             this.Close();
+        }
+        private void Seula_DropDownClosed(object sender, EventArgs e)
+        {
+            //Kun valitsee uuden seulan seuladropdown valikoista, päivitetään seula-arvot ohjearvojen seuloihin
+            SeulaArvotOhjeArvoihin();
         }
     }
 }
