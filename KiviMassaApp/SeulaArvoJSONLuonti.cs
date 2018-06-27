@@ -14,12 +14,11 @@ namespace KiviMassaApp
         {
             List<Seulakirjasto> sl = new List<Seulakirjasto>();
             string json;
-            float[] ar = new float[] { 200, 150, 125, 100, 90, 80, 63, 56, 50, 45, 40, 31.5f, 25, 22.4f, 20, 18, 16, 12.5f, 11.5f, 10, 8, 6.3f, 5.6f, 5, 4, 2, 1, 0.5f, 0.25f, 0.125f, 0.063f };
+            double[] ar = new double[] { 200, 150, 125, 100, 90, 80, 63, 56, 50, 45, 40, 31.5, 25, 22.4, 20, 18, 16, 12.5, 11.5, 10, 8, 6.3, 5.6, 5, 4, 2, 1, 0.5, 0.25, 0.125, 0.063 };
             for (int i = 0; i < ar.Length; i++)
             {
                 Seulakirjasto s = new Seulakirjasto();
                 s.seula = ar[i];
-                s.index = i;
                 sl.Add(s);
             }
             json = JsonConvert.SerializeObject(sl);

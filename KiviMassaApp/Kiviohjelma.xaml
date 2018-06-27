@@ -21,7 +21,7 @@
         <KeyBinding Key="S" Modifiers="Ctrl" Command="Save"></KeyBinding>
         <KeyBinding Key="P" Modifiers="Ctrl" Command="Print"></KeyBinding>
     </Window.InputBindings>
-    
+
     <Canvas Width="2170" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,200,1000">
         <!--Menupalkki-->
         <Canvas Height="20" Width="370">
@@ -31,6 +31,7 @@
                         <MenuItem x:Name="OpenFileExplorer" Header="Avaa" Command="Open" InputGestureText="Ctrl + O"></MenuItem>
                         <MenuItem x:Name="SaveFile" Header="Tallenna" Command="Save" InputGestureText="Ctrl + S"></MenuItem>
                         <MenuItem x:Name="Print" Header="Tulosta" Command="Print" InputGestureText="Ctrl + P"></MenuItem>
+                        <MenuItem x:Name="CreatePDF" Header="Luo PDF" Click="CreatePDF_Click"></MenuItem>
                         <MenuItem x:Name="ExitProgram" Header="Lopeta" Click="ExitProgram_Click"></MenuItem>
                     </MenuItem>
                     <MenuItem Header="Syötä">
@@ -47,149 +48,136 @@
         </Canvas>
 
         <!--Työmaan tiedot ym. muut kentät-->
-        <Canvas Height="101" Canvas.Top="20" Width="572" Background="Azure">
-            <Label Content="Työmaa:"></Label>
-            <TextBox Name="tyomaa" Height="21" Width="127" Canvas.Left="59" Canvas.Top="5"></TextBox>
+        <Canvas Height="101" Canvas.Top="19" Width="572" Background="Azure">
+            <Label Content="Työmaa:" Canvas.Top="20" Canvas.Left="40"></Label>
+            <TextBox Name="tyomaa" Height="21" Width="127" Canvas.Left="99" Canvas.Top="21"></TextBox>
 
-            <Label Content="Näyte nro:" Canvas.Left="191"></Label>
-            <TextBox Name="nayteNro" Height="21" Width="127" Canvas.Left="261" Canvas.Top="5"></TextBox>
+            <Label Content="Näyte nro:" Canvas.Left="237" Canvas.Top="16"></Label>
+            <TextBox Name="nayteNro" Height="21" Width="142" Canvas.Left="307" Canvas.Top="21"></TextBox>
 
-            <Label Content="Lajite:" Canvas.Top="26"></Label>
-            <TextBox Name="lajite" Height="21" Width="127" Canvas.Left="59" Canvas.Top="27"></TextBox>
+            <Label Content="Lajite:" Canvas.Top="41" Canvas.Left="53"></Label>
+            <TextBox Name="lajite" Height="21" Width="127" Canvas.Left="99" Canvas.Top="43"></TextBox>
 
-            <Label Content="Päiväys:" Canvas.Left="191" Canvas.Top="26"></Label>
-            <TextBox Name="date" Height="21" Width="127" Canvas.Left="261" Canvas.Top="27"></TextBox>
+            <Label Content="Päiväys:" Canvas.Left="251" Canvas.Top="40"></Label>
+            <TextBox Name="date" Height="21" Width="142" Canvas.Left="307" Canvas.Top="43"></TextBox>
+            <RadioButton Name="rbKuivaseulonta" Canvas.Left="459" Canvas.Top="35" Content="Kuivaseulonta"/>
+            <RadioButton Name="rbPesuseulonta" Canvas.Top="62" Canvas.Left="459" Content="Pesuseulonta"/>
+            <Label Content="Osoite:" Canvas.Top="62" Canvas.Left="47"/>
+            <TextBox x:Name="osoite" Height="22" Width="127" Canvas.Left="99" Canvas.Top="65"/>
+            <Label Content="Puhelin:" Canvas.Top="62" Canvas.Left="250"/>
+            <TextBox x:Name="puh" Height="22" Width="142" Canvas.Left="307" Canvas.Top="65"/>
         </Canvas>
 
         <!--Lisävaihtoehdot-->
-        <Canvas Height="122" Canvas.Top="121" Width="572" Background="Beige">
-            <RadioButton Canvas.Left="315" Canvas.Top="40">Kuivaseulanta</RadioButton>
-            <RadioButton Canvas.Top="67" Canvas.Left="315">Märkäseulanta</RadioButton>
+        <Canvas Height="101" Canvas.Top="19" Width="572" Background="Beige" Canvas.Left="572">
+            <Label Content="Listätieto:" Canvas.Left="10" Canvas.Top="12"/>
+            <TextBox x:Name="lisatieto" Height="22" Width="163" Canvas.Left="103" Canvas.Top="16"/>
 
-            <Label Content="Pesussa menetetty massa:" Canvas.Top="24"/>
-            <TextBox Name="pesussaMenetettyMassa" Height="21" Width="127" Canvas.Left="158" Canvas.Top="29"></TextBox>
+            <Label Content="Ylempi otsikko: " Canvas.Top="38" Canvas.Left="10"/>
+            <TextBox x:Name="ylempiOtsikko" Height="22" Width="163" Canvas.Left="103" Canvas.Top="42"/>
 
-            <Label Content="Kerro jaettu näyte:" Canvas.Top="64" Canvas.Left="40"></Label>
-            <TextBox Name="kerroJaettuNayte" Height="21" Width="127" Canvas.Left="158" Canvas.Top="67"></TextBox>
+            <Label Content="Alempi otsikko:" Canvas.Top="64" Canvas.Left="10"/>
+            <TextBox x:Name="alempiOtsikko" Height="22" Width="163" Canvas.Left="103" Canvas.Top="68"/>
+            <Label Content="Lähiosoite:" Canvas.Top="14" Canvas.Left="303"/>
+            <TextBox x:Name="lahiosoite" Height="22" Width="163" Canvas.Left="380" Canvas.Top="16"/>
+            <Label Content="Tutkija:" Canvas.Left="327" Canvas.Top="39"/>
+            <TextBox x:Name="tutkija" Height="21" Width="163" Canvas.Left="380" Canvas.Top="43"/>
+            <Label Content="Näytteen ottaja:" Canvas.Left="280" Canvas.Top="66"/>
+            <TextBox x:Name="naytteenOttaja" Height="21" Width="163" Canvas.Left="380" Canvas.Top="70"/>
+
         </Canvas>
 
-        <!--Otsikot ja muut tiedot-->
-        <Canvas Height="223" Canvas.Left="572" Canvas.Top="20" Width="551" Background="Bisque">
-
-            <Label Content="Listätieto:"></Label>
-            <TextBox Name="lisatieto" Height="21" Width="189" Canvas.Left="93" Canvas.Top="5"></TextBox>
-
-            <Label Content="Ylempi otsikko: " Canvas.Top="26"></Label>
-            <TextBox Name="ylempiOtsikko" Height="21" Width="189" Canvas.Left="93" Canvas.Top="31"></TextBox>
-
-            <Label Content="Alempi otsikko:" Canvas.Top="52"/>
-            <TextBox Name="alempiOtsikko" Height="21" Width="189" Canvas.Left="93" Canvas.Top="57"></TextBox>
-
-            <Label Content="Lähiosoite:" Canvas.Top="78"></Label>
-            <TextBox Name="lahiosoite" Height="21" Width="189" Canvas.Left="93" Canvas.Top="83"></TextBox>
-
-            <Label Content="Osoite:" Canvas.Top="104"></Label>
-            <TextBox Name="osoite" Height="21" Width="189" Canvas.Left="93" Canvas.Top="109"></TextBox>
-
-            <Label Content="Puhelin:" Canvas.Top="130"></Label>
-            <TextBox Name="puh" Height="21" Width="189" Canvas.Left="93" Canvas.Top="135"></TextBox>
-
-            <Label Content="Tutkija:" Canvas.Left="-1" Canvas.Top="156"></Label>
-            <TextBox Name="tutkija" Height="21" Width="189" Canvas.Left="93" Canvas.Top="161"></TextBox>
-
-            <Label Content="Näytteen ottaja:" Canvas.Left="1" Canvas.Top="182"></Label>
-            <TextBox Name="naytteenOttaja" Height="21" Width="189" Canvas.Left="93" Canvas.Top="187"></TextBox>
-        </Canvas>
-        <Canvas Height="587" Width="572" Background="BlanchedAlmond" Canvas.Top="243" Name="seulaArvot">
+        <!--Seulat ja niiden laskutoimitukset-->
+        <Canvas Height="586" Width="572" Background="BlanchedAlmond" Canvas.Top="120" Name="seulaArvot">
             <!--Vetolaatikoiden määritykset-->
             <Label Content="Seula" HorizontalAlignment="Left" VerticalAlignment="Top" Background="#FFFFB374" Foreground="#FFB80202" Width="97" FontSize="14"/>
-            <ComboBox Name="Seula1" Grid.Column="0" Grid.Row="1" Canvas.Top="37" Width="68" DropDownClosed="Seula_DropDownClosed">
+            <ComboBox Tag="seula" Name="Seula1" Grid.Column="0" Grid.Row="1" Canvas.Top="37" Width="68" DropDownClosed="Seula_DropDownClosed">
                 <ComboBoxItem IsSelected="True" Tag="200">200</ComboBoxItem>
                 <ComboBoxItem Tag="150">150</ComboBoxItem>
                 <ComboBoxItem Tag="125">125</ComboBoxItem>
             </ComboBox>
-            <ComboBox Name="Seula2" Grid.Column="0" Grid.Row="1" Canvas.Top="64" Height="21" Width="68" DropDownClosed="Seula_DropDownClosed">
+            <ComboBox  Tag="seula" Name="Seula2" Grid.Column="0" Grid.Row="1" Canvas.Top="64" Height="21" Width="68" DropDownClosed="Seula_DropDownClosed">
                 <ComboBoxItem IsSelected="True" Tag="100">100</ComboBoxItem>
                 <ComboBoxItem Tag="90">90</ComboBoxItem>
                 <ComboBoxItem Tag="80">80</ComboBoxItem>
             </ComboBox>
-            <ComboBox Name="Seula3" Grid.Column="0" Grid.Row="1" Canvas.Top="90" Height="21" Width="68" DropDownClosed="Seula_DropDownClosed">
+            <ComboBox Tag="seula" Name="Seula3" Grid.Column="0" Grid.Row="1" Canvas.Top="90" Height="21" Width="68" DropDownClosed="Seula_DropDownClosed">
                 <ComboBoxItem IsSelected="True" Tag="64">64</ComboBoxItem>
                 <ComboBoxItem Tag="63">63</ComboBoxItem>
                 <ComboBoxItem Tag="56">56</ComboBoxItem>
                 <ComboBoxItem Tag="45">45</ComboBoxItem>
-                <ComboBoxItem Tag="31.5">31.5</ComboBoxItem>
+                <ComboBoxItem Tag="31,5">31.5</ComboBoxItem>
             </ComboBox>
-            <ComboBox Name="Seula4" Grid.Column="0" Grid.Row="1" Canvas.Top="116" Height="21" Width="68" DropDownClosed="Seula_DropDownClosed">
+            <ComboBox Tag="seula" Name="Seula4" Grid.Column="0" Grid.Row="1" Canvas.Top="116" Height="21" Width="68" DropDownClosed="Seula_DropDownClosed">
                 <ComboBoxItem IsSelected="True" Tag="30">30</ComboBoxItem>
             </ComboBox>
-            <ComboBox Name="Seula5" Grid.Column="0" Grid.Row="1" Height="21" Width="68" Canvas.Top="142" DropDownClosed="Seula_DropDownClosed">
+            <ComboBox Tag="seula" Name="Seula5" Grid.Column="0" Grid.Row="1" Height="21" Width="68" Canvas.Top="142" DropDownClosed="Seula_DropDownClosed">
                 <ComboBoxItem IsSelected="True" Tag="25">25</ComboBoxItem>
-                <ComboBoxItem Tag="22.4">22.4</ComboBoxItem>
+                <ComboBoxItem Tag="22,4">22.4</ComboBoxItem>
             </ComboBox>
-            <ComboBox Name="Seula6" Grid.Column="0" Grid.Row="1" Height="21" Width="68" Canvas.Top="168" DropDownClosed="Seula_DropDownClosed">
+            <ComboBox Tag="seula" Name="Seula6" Grid.Column="0" Grid.Row="1" Height="21" Width="68" Canvas.Top="168" DropDownClosed="Seula_DropDownClosed">
                 <ComboBoxItem IsSelected="True" Tag="20">20</ComboBoxItem>
             </ComboBox>
-            <ComboBox Name="Seula7" Grid.Column="0" Grid.Row="1" Height="21" Width="68" Canvas.Top="194" DropDownClosed="Seula_DropDownClosed">
+            <ComboBox Tag="seula" Name="Seula7" Grid.Column="0" Grid.Row="1" Height="21" Width="68" Canvas.Top="194" DropDownClosed="Seula_DropDownClosed">
                 <ComboBoxItem IsSelected="True" Tag="18">18</ComboBoxItem>
             </ComboBox>
-            <ComboBox Name="Seula8" Grid.Column="0" Grid.Row="1" Height="21" Width="68" Canvas.Top="220" DropDownClosed="Seula_DropDownClosed">
+            <ComboBox Tag="seula" Name="Seula8" Grid.Column="0" Grid.Row="1" Height="21" Width="68" Canvas.Top="220" DropDownClosed="Seula_DropDownClosed">
                 <ComboBoxItem IsSelected="True" Tag="16">16</ComboBoxItem>
             </ComboBox>
-            <ComboBox Name="Seula9" Grid.Column="0" Grid.Row="1" Height="21" Width="68" Canvas.Top="246" DropDownClosed="Seula_DropDownClosed">
+            <ComboBox Tag="seula" Name="Seula9" Grid.Column="0" Grid.Row="1" Height="21" Width="68" Canvas.Top="246" DropDownClosed="Seula_DropDownClosed">
                 <ComboBoxItem IsSelected="True" Tag="12">12</ComboBoxItem>
-                <ComboBoxItem Tag="11.2">11.2</ComboBoxItem>
+                <ComboBoxItem Tag="11,2">11.2</ComboBoxItem>
             </ComboBox>
-            <ComboBox Name="Seula10" Grid.Column="0" Grid.Row="1" Height="21" Width="68" Canvas.Top="272" DropDownClosed="Seula_DropDownClosed">
+            <ComboBox Tag="seula" Name="Seula10" Grid.Column="0" Grid.Row="1" Height="21" Width="68" Canvas.Top="272" DropDownClosed="Seula_DropDownClosed">
                 <ComboBoxItem IsSelected="True" Tag="8">8</ComboBoxItem>
             </ComboBox>
-            <ComboBox Name="Seula11" Grid.Column="0" Grid.Row="1" Height="21" Width="68" Canvas.Top="298" DropDownClosed="Seula_DropDownClosed">
+            <ComboBox Tag="seula" Name="Seula11" Grid.Column="0" Grid.Row="1" Height="21" Width="68" Canvas.Top="298" DropDownClosed="Seula_DropDownClosed">
                 <ComboBoxItem IsSelected="True" Tag="6">6</ComboBoxItem>
-                <ComboBoxItem Tag="5.6">5.6</ComboBoxItem>
+                <ComboBoxItem Tag="5,6">5.6</ComboBoxItem>
             </ComboBox>
-            <ComboBox Name="Seula12" Grid.Column="0" Grid.Row="1" Height="21" Width="68" Canvas.Top="324" DropDownClosed="Seula_DropDownClosed">
+            <ComboBox Tag="seula" Name="Seula12" Grid.Column="0" Grid.Row="1" Height="21" Width="68" Canvas.Top="324" DropDownClosed="Seula_DropDownClosed">
                 <ComboBoxItem IsSelected="True" Tag="4">4</ComboBoxItem>
             </ComboBox>
-            <ComboBox Name="Seula13" Grid.Column="0" Grid.Row="1" Height="21" Width="68" Canvas.Top="350" DropDownClosed="Seula_DropDownClosed">
+            <ComboBox Tag="seula" Name="Seula13" Grid.Column="0" Grid.Row="1" Height="21" Width="68" Canvas.Top="350" DropDownClosed="Seula_DropDownClosed">
                 <ComboBoxItem IsSelected="True" Tag="2">2</ComboBoxItem>
             </ComboBox>
-            <ComboBox Name="Seula14" Grid.Column="0" Grid.Row="1" Height="21" Width="68" Canvas.Top="376" DropDownClosed="Seula_DropDownClosed">
+            <ComboBox Tag="seula" Name="Seula14" Grid.Column="0" Grid.Row="1" Height="21" Width="68" Canvas.Top="376" DropDownClosed="Seula_DropDownClosed">
                 <ComboBoxItem IsSelected="True" Tag="1">1</ComboBoxItem>
             </ComboBox>
-            <ComboBox Name="Seula15" Grid.Column="0" Grid.Row="1" Height="21" Width="68" Canvas.Top="402" DropDownClosed="Seula_DropDownClosed">
-                <ComboBoxItem IsSelected="True" Tag="0.5">0.5</ComboBoxItem>
+            <ComboBox Tag="seula" Name="Seula15" Grid.Column="0" Grid.Row="1" Height="21" Width="68" Canvas.Top="402" DropDownClosed="Seula_DropDownClosed">
+                <ComboBoxItem IsSelected="True" Tag="0,5">0.5</ComboBoxItem>
             </ComboBox>
-            <ComboBox Name="Seula16" Grid.Column="0" Grid.Row="1" Height="21" Width="68" Canvas.Top="428" DropDownClosed="Seula_DropDownClosed">
-                <ComboBoxItem IsSelected="True" Tag="0.25">0.25</ComboBoxItem>
+            <ComboBox Tag="seula" Name="Seula16" Grid.Column="0" Grid.Row="1" Height="21" Width="68" Canvas.Top="428" DropDownClosed="Seula_DropDownClosed">
+                <ComboBoxItem IsSelected="True" Tag="0,25">0.25</ComboBoxItem>
             </ComboBox>
-            <ComboBox Name="Seula17" Grid.Column="0" Grid.Row="1" Height="21" Width="68" Canvas.Top="454" DropDownClosed="Seula_DropDownClosed">
-                <ComboBoxItem IsSelected="True" Tag="0.125">0.125</ComboBoxItem>
+            <ComboBox Tag="seula" Name="Seula17" Grid.Column="0" Grid.Row="1" Height="21" Width="68" Canvas.Top="454" DropDownClosed="Seula_DropDownClosed">
+                <ComboBoxItem IsSelected="True" Tag="0,125">0.125</ComboBoxItem>
             </ComboBox>
-            <ComboBox Name="Seula18" Grid.Column="0" Grid.Row="1" Height="21" Width="68" Canvas.Top="480" DropDownClosed="Seula_DropDownClosed">
-                <ComboBoxItem IsSelected="True" Tag="0.063">0.063</ComboBoxItem>
+            <ComboBox Tag="seula" Name="Seula18" Grid.Column="0" Grid.Row="1" Height="21" Width="68" Canvas.Top="480" DropDownClosed="Seula_DropDownClosed">
+                <ComboBoxItem IsSelected="True" Tag="0,063">0.063</ComboBoxItem>
             </ComboBox>
 
             <!--Seulalle jäävien arvojen tekstilaatikot-->
             <Label Content="Seulalle jäi (g)" Canvas.Left="78" Background="#FFFFB374" Foreground="#FFB80202" Width="97" FontSize="14"/>
-            <TextBox Name="seulaG0" Height="21" Width="68" Canvas.Left="97" Canvas.Top="38" PreviewTextInput="NumberValidationTextBox"></TextBox>
-            <TextBox Name="seulaG1" Height="21" Width="68" Canvas.Left="97" Canvas.Top="64" PreviewTextInput="NumberValidationTextBox"></TextBox>
-            <TextBox Name="seulaG2" Height="21" Width="68" Canvas.Left="97" Canvas.Top="90" PreviewTextInput="NumberValidationTextBox"></TextBox>
-            <TextBox Name="seulaG3" Height="21" Width="68" Canvas.Left="97" Canvas.Top="116" PreviewTextInput="NumberValidationTextBox"></TextBox>
-            <TextBox Name="seulaG4" Height="21" Width="68" Canvas.Left="97" Canvas.Top="142" PreviewTextInput="NumberValidationTextBox"></TextBox>
-            <TextBox Name="seulaG5" Height="21" Width="68" Canvas.Left="97" Canvas.Top="168" PreviewTextInput="NumberValidationTextBox"></TextBox>
-            <TextBox Name="seulaG6" Height="21" Width="68" Canvas.Left="97" Canvas.Top="194" PreviewTextInput="NumberValidationTextBox"></TextBox>
-            <TextBox Name="seulaG7" Height="21" Width="68" Canvas.Left="97" Canvas.Top="220" PreviewTextInput="NumberValidationTextBox"></TextBox>
-            <TextBox Name="seulaG8" Height="21" Width="68" Canvas.Left="97" Canvas.Top="246" PreviewTextInput="NumberValidationTextBox"></TextBox>
-            <TextBox Name="seulaG9" Height="21" Width="68" Canvas.Left="97" Canvas.Top="272" PreviewTextInput="NumberValidationTextBox"></TextBox>
-            <TextBox Name="seulaG10" Height="21" Width="68" Canvas.Left="97" Canvas.Top="298" PreviewTextInput="NumberValidationTextBox"></TextBox>
-            <TextBox Name="seulaG11" Height="21" Width="68" Canvas.Left="97" Canvas.Top="324" PreviewTextInput="NumberValidationTextBox"></TextBox>
-            <TextBox Name="seulaG12" Height="21" Width="68" Canvas.Left="97" Canvas.Top="350" PreviewTextInput="NumberValidationTextBox"></TextBox>
-            <TextBox Name="seulaG13" Height="21" Width="68" Canvas.Left="97" Canvas.Top="376" PreviewTextInput="NumberValidationTextBox"></TextBox>
-            <TextBox Name="seulaG14" Height="21" Width="68" Canvas.Left="97" Canvas.Top="402" PreviewTextInput="NumberValidationTextBox"></TextBox>
-            <TextBox Name="seulaG15" Height="21" Width="68" Canvas.Left="97" Canvas.Top="428" PreviewTextInput="NumberValidationTextBox"></TextBox>
-            <TextBox Name="seulaG16" Height="21" Width="68" Canvas.Left="97" Canvas.Top="454" PreviewTextInput="NumberValidationTextBox"></TextBox>
-            <TextBox Name="seulaG17" Height="21" Width="68" Canvas.Left="97" Canvas.Top="480" PreviewTextInput="NumberValidationTextBox"></TextBox>
-            <TextBox Name="seulaG18" Height="21" Width="68" Canvas.Left="97" Canvas.Top="506" PreviewTextInput="NumberValidationTextBox"></TextBox>
+            <TextBox Tag="arvo" Name="seulaG0" Height="21" Width="68" Canvas.Left="97" Canvas.Top="38" PreviewTextInput="NumberValidationTextBox"></TextBox>
+            <TextBox Tag="arvo" Name="seulaG1" Height="21" Width="68" Canvas.Left="97" Canvas.Top="64" PreviewTextInput="NumberValidationTextBox"></TextBox>
+            <TextBox Tag="arvo" Name="seulaG2" Height="21" Width="68" Canvas.Left="97" Canvas.Top="90" PreviewTextInput="NumberValidationTextBox"></TextBox>
+            <TextBox Tag="arvo" Name="seulaG3" Height="21" Width="68" Canvas.Left="97" Canvas.Top="116" PreviewTextInput="NumberValidationTextBox"></TextBox>
+            <TextBox Tag="arvo" Name="seulaG4" Height="21" Width="68" Canvas.Left="97" Canvas.Top="142" PreviewTextInput="NumberValidationTextBox"></TextBox>
+            <TextBox Tag="arvo" Name="seulaG5" Height="21" Width="68" Canvas.Left="97" Canvas.Top="168" PreviewTextInput="NumberValidationTextBox"></TextBox>
+            <TextBox Tag="arvo" Name="seulaG6" Height="21" Width="68" Canvas.Left="97" Canvas.Top="194" PreviewTextInput="NumberValidationTextBox"></TextBox>
+            <TextBox Tag="arvo" Name="seulaG7" Height="21" Width="68" Canvas.Left="97" Canvas.Top="220" PreviewTextInput="NumberValidationTextBox"></TextBox>
+            <TextBox Tag="arvo" Name="seulaG8" Height="21" Width="68" Canvas.Left="97" Canvas.Top="246" PreviewTextInput="NumberValidationTextBox"></TextBox>
+            <TextBox Tag="arvo" Name="seulaG9" Height="21" Width="68" Canvas.Left="97" Canvas.Top="272" PreviewTextInput="NumberValidationTextBox"></TextBox>
+            <TextBox Tag="arvo" Name="seulaG10" Height="21" Width="68" Canvas.Left="97" Canvas.Top="298" PreviewTextInput="NumberValidationTextBox"></TextBox>
+            <TextBox Tag="arvo" Name="seulaG11" Height="21" Width="68" Canvas.Left="97" Canvas.Top="324" PreviewTextInput="NumberValidationTextBox"></TextBox>
+            <TextBox Tag="arvo" Name="seulaG12" Height="21" Width="68" Canvas.Left="97" Canvas.Top="350" PreviewTextInput="NumberValidationTextBox"></TextBox>
+            <TextBox Tag="arvo" Name="seulaG13" Height="21" Width="68" Canvas.Left="97" Canvas.Top="376" PreviewTextInput="NumberValidationTextBox"></TextBox>
+            <TextBox Tag="arvo" Name="seulaG14" Height="21" Width="68" Canvas.Left="97" Canvas.Top="402" PreviewTextInput="NumberValidationTextBox"></TextBox>
+            <TextBox Tag="arvo" Name="seulaG15" Height="21" Width="68" Canvas.Left="97" Canvas.Top="428" PreviewTextInput="NumberValidationTextBox"></TextBox>
+            <TextBox Tag="arvo" Name="seulaG16" Height="21" Width="68" Canvas.Left="97" Canvas.Top="454" PreviewTextInput="NumberValidationTextBox"></TextBox>
+            <TextBox Tag="arvo" Name="seulaG17" Height="21" Width="68" Canvas.Left="97" Canvas.Top="480" PreviewTextInput="NumberValidationTextBox"></TextBox>
+            <TextBox Tag="arvo" Name="seulaG18" Height="21" Width="68" Canvas.Left="97" Canvas.Top="506" PreviewTextInput="NumberValidationTextBox"></TextBox>
             <Button x:Name="EmptyValues" Height="34" Width="80" Canvas.Left="10" Canvas.Top="535" Click="EmptyFields_Click" Background="#FFE05A5A" BorderBrush="#FF400101" Foreground="Black" FontSize="14">Tyhjää arvot
             </Button>
 
@@ -241,11 +229,11 @@
             <TextBox Name="punnittuYhteensa" Height="23" Width="68" Canvas.Left="210" Canvas.Top="547" IsReadOnly="True"/>
 
             <!--Laske nappi-->
-            <Button x:Name="btnLaske" Height="53" Width="93" Canvas.Left="449" Canvas.Top="516" Click="btnLaske_Click" FontSize="16">Laske</Button>
+            <Button x:Name="btnLaske" Height="53" Width="93" Canvas.Left="455" Canvas.Top="514" Click="btnLaske_Click" FontSize="16" Background="#FFD0FF8B" BorderBrush="#FF2F8100">Laske</Button>
             <TextBox x:Name="markapaino" Height="21" Width="81" Canvas.Left="461" Canvas.Top="93" PreviewTextInput="NumberValidationTextBox"/>
             <Label Content="Märkäpaino g:" Canvas.Left="452" Canvas.Top="64" FontSize="14"/>
-            <Label x:Name="lblKosteuspros" Content="Kosteus-%" Canvas.Left="283" Canvas.Top="543" Width="76" FontSize="14"/>
-            <TextBox x:Name="tbKosteuspros" Height="23" Canvas.Left="359" TextWrapping="Wrap" Canvas.Top="547" Width="68" IsReadOnly="True"/>
+            <Label x:Name="lblKosteuspros" Content="Kosteus-%" Canvas.Left="463" Canvas.Top="115" Width="76" FontSize="14"/>
+            <TextBox x:Name="tbKosteuspros" Height="23" Canvas.Left="467" TextWrapping="Wrap" Canvas.Top="140" Width="68" IsReadOnly="True"/>
             <Label Content="Pohja" Canvas.Top="501" Width="68" Height="31" FontSize="14" Canvas.Left="10"/>
             <TextBox x:Name="jaettuG0" Height="21" Canvas.Left="181" Canvas.Top="38" Width="68" PreviewTextInput="NumberValidationTextBox"/>
             <TextBox x:Name="jaettuG1" Height="21" Canvas.Left="181" Canvas.Top="64" Width="68" PreviewTextInput="NumberValidationTextBox"/>
@@ -267,22 +255,28 @@
             <TextBox x:Name="jaettuG17" Height="21" Canvas.Left="181" Canvas.Top="480" Width="68" PreviewTextInput="NumberValidationTextBox"/>
             <TextBox x:Name="jaettuG18" Height="21" Canvas.Left="181" Canvas.Top="506" Width="68" PreviewTextInput="NumberValidationTextBox"/>
             <Label Content="Jaettu näyte" Canvas.Left="175" Background="#FFFFB374" Foreground="#FFB80202" Width="100" FontSize="14"/>
-            <TextBox x:Name="tbJakoKerroin" Height="23" Canvas.Left="461" TextWrapping="Wrap" Canvas.Top="166" Width="81" IsReadOnly="true" />
-            <Label x:Name="lblJakoKerroin" Content="Jakokerroin:" Canvas.Left="458" Canvas.Top="139" FontSize="14" Width="88"/>
-            <ComboBox x:Name="dbDesimaali" Canvas.Top="246" Width="62" Canvas.Left="472">
+            <TextBox x:Name="tbJakoKerroin" Height="23" Canvas.Left="461" TextWrapping="Wrap" Canvas.Top="254" Width="81" IsReadOnly="true" />
+            <Label x:Name="lblJakoKerroin" Content="Jakokerroin:" Canvas.Left="458" Canvas.Top="227" FontSize="14" Width="88"/>
+            <ComboBox Tag="desimaali" x:Name="dbDesimaali" Canvas.Top="330" Width="62" Canvas.Left="472">
                 <ComboBoxItem IsSelected="True" Tag="1" Content="1"/>
                 <ComboBoxItem Tag="2" Content="2"/>
                 <ComboBoxItem Tag="3" Content="3"/>
             </ComboBox>
 
-            <Label x:Name="lblDesimaali" Canvas.Left="454" Canvas.Top="202">
+            <Label x:Name="lblDesimaali" Canvas.Left="454" Canvas.Top="283">
                 <TextBlock
                     TextAlignment="Center"
                  Text="Tulosten tarkkuus&#x0a;desimaaleissa:"/>
             </Label>
+            <Label x:Name="lblDesimaali_Copy" Canvas.Left="447" Canvas.Top="168">
+                <TextBlock
+                    TextAlignment="Center"
+                    Text="Pesussa menetetty&#xA;massa:"/>
+            </Label>
+            <TextBox x:Name="tbPesutappio" Height="21" Width="81" Canvas.Left="461" Canvas.Top="208"/>
         </Canvas>
         <!--Ohjealueet-->
-        <Canvas Height="587" Canvas.Left="572" Width="551" Background="AliceBlue" Canvas.Top="243" Name="ohjeArvot">
+        <Canvas Height="586" Canvas.Left="572" Width="572" Background="AliceBlue" Canvas.Top="120" Name="ohjeArvot">
             <Label Content="Sisempi ohjealue" Canvas.Left="161"></Label>
             <Label Content="Ulompi ohjealue" Canvas.Left="358"></Label>
 
@@ -309,88 +303,89 @@
 
             <!--Sisempi ohjealue-->
             <Label Content="Alempi ohje %" Canvas.Left="120" Canvas.Top="29"></Label>
-            <TextBox Name="sisOhjAlempiValue1" Height="21" Width="68" Canvas.Top="53" Canvas.Left="129"></TextBox>
-            <TextBox Name="sisOhjAlempiValue2" Height="21" Width="68" Canvas.Top="79" Canvas.Left="129"></TextBox>
-            <TextBox Name="sisOhjAlempiValue3" Height="21" Width="68" Canvas.Top="105" Canvas.Left="129"></TextBox>
-            <TextBox Name="sisOhjAlempiValue4" Height="21" Width="68" Canvas.Top="131" Canvas.Left="129"></TextBox>
-            <TextBox Name="sisOhjAlempiValue5" Height="21" Width="68" Canvas.Top="157" Canvas.Left="129"></TextBox>
-            <TextBox Name="sisOhjAlempiValue6" Height="21" Width="68" Canvas.Top="183" Canvas.Left="129"></TextBox>
-            <TextBox Name="sisOhjAlempiValue7" Height="21" Width="68" Canvas.Top="209" Canvas.Left="129"></TextBox>
-            <TextBox Name="sisOhjAlempiValue8" Height="21" Width="68" Canvas.Top="235" Canvas.Left="129"></TextBox>
-            <TextBox Name="sisOhjAlempiValue9" Height="21" Width="68" Canvas.Top="261" Canvas.Left="129"></TextBox>
-            <TextBox Name="sisOhjAlempiValue10" Height="21" Width="68" Canvas.Top="287" Canvas.Left="129"></TextBox>
-            <TextBox Name="sisOhjAlempiValue11" Height="21" Width="68" Canvas.Top="313" Canvas.Left="129"></TextBox>
-            <TextBox Name="sisOhjAlempiValue12" Height="21" Width="68" Canvas.Top="339" Canvas.Left="129"></TextBox>
-            <TextBox Name="sisOhjAlempiValue13" Height="21" Width="68" Canvas.Top="365" Canvas.Left="129"></TextBox>
-            <TextBox Name="sisOhjAlempiValue14" Height="21" Width="68" Canvas.Top="391" Canvas.Left="129"></TextBox>
-            <TextBox Name="sisOhjAlempiValue15" Height="21" Width="68" Canvas.Top="417" Canvas.Left="129"></TextBox>
-            <TextBox Name="sisOhjAlempiValue16" Height="21" Width="68" Canvas.Top="443" Canvas.Left="129"></TextBox>
-            <TextBox Name="sisOhjAlempiValue17" Height="21" Width="68" Canvas.Top="469" Canvas.Left="129"></TextBox>
-            <TextBox Name="sisOhjAlempiValue18" Height="21" Width="68" Canvas.Top="495" Canvas.Left="129"></TextBox>
+            <TextBox Tag="sisAla" Name="sisOhjAlempiValue1" Height="21" Width="68" Canvas.Top="53" Canvas.Left="129"></TextBox>
+            <TextBox Tag="sisAla" Name="sisOhjAlempiValue2" Height="21" Width="68" Canvas.Top="79" Canvas.Left="129"></TextBox>
+            <TextBox Tag="sisAla" Name="sisOhjAlempiValue3" Height="21" Width="68" Canvas.Top="105" Canvas.Left="129"></TextBox>
+            <TextBox Tag="sisAla" Name="sisOhjAlempiValue4" Height="21" Width="68" Canvas.Top="131" Canvas.Left="129"></TextBox>
+            <TextBox Tag="sisAla" Name="sisOhjAlempiValue5" Height="21" Width="68" Canvas.Top="157" Canvas.Left="129"></TextBox>
+            <TextBox Tag="sisAla" Name="sisOhjAlempiValue6" Height="21" Width="68" Canvas.Top="183" Canvas.Left="129"></TextBox>
+            <TextBox Tag="sisAla" Name="sisOhjAlempiValue7" Height="21" Width="68" Canvas.Top="209" Canvas.Left="129"></TextBox>
+            <TextBox Tag="sisAla" Name="sisOhjAlempiValue8" Height="21" Width="68" Canvas.Top="235" Canvas.Left="129"></TextBox>
+            <TextBox Tag="sisAla" Name="sisOhjAlempiValue9" Height="21" Width="68" Canvas.Top="261" Canvas.Left="129"></TextBox>
+            <TextBox Tag="sisAla" Name="sisOhjAlempiValue10" Height="21" Width="68" Canvas.Top="287" Canvas.Left="129"></TextBox>
+            <TextBox Tag="sisAla" Name="sisOhjAlempiValue11" Height="21" Width="68" Canvas.Top="313" Canvas.Left="129"></TextBox>
+            <TextBox Tag="sisAla" Name="sisOhjAlempiValue12" Height="21" Width="68" Canvas.Top="339" Canvas.Left="129"></TextBox>
+            <TextBox Tag="sisAla" Name="sisOhjAlempiValue13" Height="21" Width="68" Canvas.Top="365" Canvas.Left="129"></TextBox>
+            <TextBox Tag="sisAla" Name="sisOhjAlempiValue14" Height="21" Width="68" Canvas.Top="391" Canvas.Left="129"></TextBox>
+            <TextBox Tag="sisAla" Name="sisOhjAlempiValue15" Height="21" Width="68" Canvas.Top="417" Canvas.Left="129"></TextBox>
+            <TextBox Tag="sisAla" Name="sisOhjAlempiValue16" Height="21" Width="68" Canvas.Top="443" Canvas.Left="129"></TextBox>
+            <TextBox Tag="sisAla" Name="sisOhjAlempiValue17" Height="21" Width="68" Canvas.Top="469" Canvas.Left="129"></TextBox>
+            <TextBox Tag="sisAla" Name="sisOhjAlempiValue18" Height="21" Width="68" Canvas.Top="495" Canvas.Left="129"></TextBox>
 
             <Label Content="Ylempi ohje %" Canvas.Left="212" Canvas.Top="29"></Label>
-            <TextBox Name="SisOhjYlempiValue1" Height="21" Width="68" Canvas.Top="53" Canvas.Left="221"></TextBox>
-            <TextBox Name="SisOhjYlempiValue2" Height="21" Width="68" Canvas.Top="79" Canvas.Left="221"></TextBox>
-            <TextBox Name="SisOhjYlempiValue3" Height="21" Width="68" Canvas.Top="105" Canvas.Left="221"></TextBox>
-            <TextBox Name="SisOhjYlempiValue4" Height="21" Width="68" Canvas.Top="131" Canvas.Left="221"></TextBox>
-            <TextBox Name="SisOhjYlempiValue5" Height="21" Width="68" Canvas.Top="157" Canvas.Left="221"></TextBox>
-            <TextBox Name="SisOhjYlempiValue6" Height="21" Width="68" Canvas.Top="183" Canvas.Left="221"></TextBox>
-            <TextBox Name="SisOhjYlempiValue7" Height="21" Width="68" Canvas.Top="209" Canvas.Left="221"></TextBox>
-            <TextBox Name="SisOhjYlempiValue8" Height="21" Width="68" Canvas.Top="235" Canvas.Left="221"></TextBox>
-            <TextBox Name="SisOhjYlempiValue9" Height="21" Width="68" Canvas.Top="261" Canvas.Left="221"></TextBox>
-            <TextBox Name="SisOhjYlempiValue10" Height="21" Width="68" Canvas.Top="287" Canvas.Left="221"></TextBox>
-            <TextBox Name="SisOhjYlempiValue11" Height="21" Width="68" Canvas.Top="313" Canvas.Left="221"></TextBox>
-            <TextBox Name="SisOhjYlempiValue12" Height="21" Width="68" Canvas.Top="339" Canvas.Left="221"></TextBox>
-            <TextBox Name="SisOhjYlempiValue13" Height="21" Width="68" Canvas.Top="365" Canvas.Left="221"></TextBox>
-            <TextBox Name="SisOhjYlempiValue14" Height="21" Width="68" Canvas.Top="391" Canvas.Left="221"></TextBox>
-            <TextBox Name="SisOhjYlempiValue15" Height="21" Width="68" Canvas.Top="417" Canvas.Left="221"></TextBox>
-            <TextBox Name="SisOhjYlempiValue16" Height="21" Width="68" Canvas.Top="443" Canvas.Left="221"></TextBox>
-            <TextBox Name="SisOhjYlempiValue17" Height="21" Width="68" Canvas.Top="469" Canvas.Left="221"></TextBox>
-            <TextBox Name="SisOhjYlempiValue18" Height="21" Width="68" Canvas.Top="495" Canvas.Left="221"></TextBox>
+            <TextBox Tag="sisYla" Name="SisOhjYlempiValue1" Height="21" Width="68" Canvas.Top="53" Canvas.Left="221"></TextBox>
+            <TextBox Tag="sisYla" Name="SisOhjYlempiValue2" Height="21" Width="68" Canvas.Top="79" Canvas.Left="221"></TextBox>
+            <TextBox Tag="sisYla" Name="SisOhjYlempiValue3" Height="21" Width="68" Canvas.Top="105" Canvas.Left="221"></TextBox>
+            <TextBox Tag="sisYla" Name="SisOhjYlempiValue4" Height="21" Width="68" Canvas.Top="131" Canvas.Left="221"></TextBox>
+            <TextBox Tag="sisYla" Name="SisOhjYlempiValue5" Height="21" Width="68" Canvas.Top="157" Canvas.Left="221"></TextBox>
+            <TextBox Tag="sisYla" Name="SisOhjYlempiValue6" Height="21" Width="68" Canvas.Top="183" Canvas.Left="221"></TextBox>
+            <TextBox Tag="sisYla" Name="SisOhjYlempiValue7" Height="21" Width="68" Canvas.Top="209" Canvas.Left="221"></TextBox>
+            <TextBox Tag="sisYla" Name="SisOhjYlempiValue8" Height="21" Width="68" Canvas.Top="235" Canvas.Left="221"></TextBox>
+            <TextBox Tag="sisYla" Name="SisOhjYlempiValue9" Height="21" Width="68" Canvas.Top="261" Canvas.Left="221"></TextBox>
+            <TextBox Tag="sisYla" Name="SisOhjYlempiValue10" Height="21" Width="68" Canvas.Top="287" Canvas.Left="221"></TextBox>
+            <TextBox Tag="sisYla" Name="SisOhjYlempiValue11" Height="21" Width="68" Canvas.Top="313" Canvas.Left="221"></TextBox>
+            <TextBox Tag="sisYla" Name="SisOhjYlempiValue12" Height="21" Width="68" Canvas.Top="339" Canvas.Left="221"></TextBox>
+            <TextBox Tag="sisYla" Name="SisOhjYlempiValue13" Height="21" Width="68" Canvas.Top="365" Canvas.Left="221"></TextBox>
+            <TextBox Tag="sisYla" Name="SisOhjYlempiValue14" Height="21" Width="68" Canvas.Top="391" Canvas.Left="221"></TextBox>
+            <TextBox Tag="sisYla" Name="SisOhjYlempiValue15" Height="21" Width="68" Canvas.Top="417" Canvas.Left="221"></TextBox>
+            <TextBox Tag="sisYla" Name="SisOhjYlempiValue16" Height="21" Width="68" Canvas.Top="443" Canvas.Left="221"></TextBox>
+            <TextBox Tag="sisYla" Name="SisOhjYlempiValue17" Height="21" Width="68" Canvas.Top="469" Canvas.Left="221"></TextBox>
+            <TextBox Tag="sisYla" Name="SisOhjYlempiValue18" Height="21" Width="68" Canvas.Top="495" Canvas.Left="221"></TextBox>
 
             <!--Ulompi ohjealue-->
             <Label Content="Alempi ohje %" Canvas.Left="315" Canvas.Top="29"></Label>
-            <TextBox Name="UloOhjAlempiValue1" Height="21" Width="68" Canvas.Top="53" Canvas.Left="325"></TextBox>
-            <TextBox Name="UloOhjAlempiValue2" Height="21" Width="68" Canvas.Top="79" Canvas.Left="325"></TextBox>
-            <TextBox Name="UloOhjAlempiValue3" Height="21" Width="68" Canvas.Top="105" Canvas.Left="325"></TextBox>
-            <TextBox Name="UloOhjAlempiValue4" Height="21" Width="68" Canvas.Top="131" Canvas.Left="325"></TextBox>
-            <TextBox Name="UloOhjAlempiValue5" Height="21" Width="68" Canvas.Top="157" Canvas.Left="325"></TextBox>
-            <TextBox Name="UloOhjAlempiValue6" Height="21" Width="68" Canvas.Top="183" Canvas.Left="325"></TextBox>
-            <TextBox Name="UloOhjAlempiValue7" Height="21" Width="68" Canvas.Top="209" Canvas.Left="325"></TextBox>
-            <TextBox Name="UloOhjAlempiValue8" Height="21" Width="68" Canvas.Top="235" Canvas.Left="325"></TextBox>
-            <TextBox Name="UloOhjAlempiValue9" Height="21" Width="68" Canvas.Top="261" Canvas.Left="325"></TextBox>
-            <TextBox Name="UloOhjAlempiValue10" Height="21" Width="68" Canvas.Top="287" Canvas.Left="325"></TextBox>
-            <TextBox Name="UloOhjAlempiValue11" Height="21" Width="68" Canvas.Top="313" Canvas.Left="325"></TextBox>
-            <TextBox Name="UloOhjAlempiValue12" Height="21" Width="68" Canvas.Top="339" Canvas.Left="325"></TextBox>
-            <TextBox Name="UloOhjAlempiValue13" Height="21" Width="68" Canvas.Top="365" Canvas.Left="325"></TextBox>
-            <TextBox Name="UloOhjAlempiValue14" Height="21" Width="68" Canvas.Top="391" Canvas.Left="325"></TextBox>
-            <TextBox Name="UloOhjAlempiValue15" Height="21" Width="68" Canvas.Top="417" Canvas.Left="325"></TextBox>
-            <TextBox Name="UloOhjAlempiValue16" Height="21" Width="68" Canvas.Top="443" Canvas.Left="325"></TextBox>
-            <TextBox Name="UloOhjAlempiValue17" Height="21" Width="68" Canvas.Top="469" Canvas.Left="325"></TextBox>
-            <TextBox Name="UloOhjAlempiValue18" Height="21" Width="68" Canvas.Top="495" Canvas.Left="325"></TextBox>
+            <TextBox Name="UloOhjAlempiValue1" Height="21" Width="68" Canvas.Top="53" Canvas.Left="325" Tag="uloAla"></TextBox>
+            <TextBox Name="UloOhjAlempiValue2" Height="21" Width="68" Canvas.Top="79" Canvas.Left="325" Tag="uloAla"></TextBox>
+            <TextBox Name="UloOhjAlempiValue3" Height="21" Width="68" Canvas.Top="105" Canvas.Left="325" Tag="uloAla"></TextBox>
+            <TextBox Name="UloOhjAlempiValue4" Height="21" Width="68" Canvas.Top="131" Canvas.Left="325" Tag="uloAla"></TextBox>
+            <TextBox Name="UloOhjAlempiValue5" Height="21" Width="68" Canvas.Top="157" Canvas.Left="325" Tag="uloAla"></TextBox>
+            <TextBox Name="UloOhjAlempiValue6" Height="21" Width="68" Canvas.Top="183" Canvas.Left="325" Tag="uloAla"></TextBox>
+            <TextBox Name="UloOhjAlempiValue7" Height="21" Width="68" Canvas.Top="209" Canvas.Left="325" Tag="uloAla"></TextBox>
+            <TextBox Name="UloOhjAlempiValue8" Height="21" Width="68" Canvas.Top="235" Canvas.Left="325" Tag="uloAla"></TextBox>
+            <TextBox Name="UloOhjAlempiValue9" Height="21" Width="68" Canvas.Top="261" Canvas.Left="325" Tag="uloAla"></TextBox>
+            <TextBox Name="UloOhjAlempiValue10" Height="21" Width="68" Canvas.Top="287" Canvas.Left="325" Tag="uloAla"></TextBox>
+            <TextBox Name="UloOhjAlempiValue11" Height="21" Width="68" Canvas.Top="313" Canvas.Left="325" Tag="uloAla"></TextBox>
+            <TextBox Name="UloOhjAlempiValue12" Height="21" Width="68" Canvas.Top="339" Canvas.Left="325" Tag="uloAla"></TextBox>
+            <TextBox Name="UloOhjAlempiValue13" Height="21" Width="68" Canvas.Top="365" Canvas.Left="325" Tag="uloAla"></TextBox>
+            <TextBox Name="UloOhjAlempiValue14" Height="21" Width="68" Canvas.Top="391" Canvas.Left="325" Tag="uloAla"></TextBox>
+            <TextBox Name="UloOhjAlempiValue15" Height="21" Width="68" Canvas.Top="417" Canvas.Left="325" Tag="uloAla"></TextBox>
+            <TextBox Name="UloOhjAlempiValue16" Height="21" Width="68" Canvas.Top="443" Canvas.Left="325" Tag="uloAla"></TextBox>
+            <TextBox Name="UloOhjAlempiValue17" Height="21" Width="68" Canvas.Top="469" Canvas.Left="325" Tag="uloAla"></TextBox>
+            <TextBox Name="UloOhjAlempiValue18" Height="21" Width="68" Canvas.Top="495" Canvas.Left="325" Tag="uloAla"></TextBox>
 
             <Label Content="Ylempi ohje %" Canvas.Left="416" Canvas.Top="29"></Label>
-            <TextBox Name="UloOhjYlempiValue1" Height="21" Width="68" Canvas.Top="53" Canvas.Left="425"></TextBox>
-            <TextBox Name="UloOhjYlempiValue2" Height="21" Width="68" Canvas.Top="79" Canvas.Left="425"></TextBox>
-            <TextBox Name="UloOhjYlempiValue3" Height="21" Width="68" Canvas.Top="105" Canvas.Left="425"></TextBox>
-            <TextBox Name="UloOhjYlempiValue4" Height="21" Width="68" Canvas.Top="131" Canvas.Left="425"></TextBox>
-            <TextBox Name="UloOhjYlempiValue5" Height="21" Width="68" Canvas.Top="157" Canvas.Left="425"></TextBox>
-            <TextBox Name="UloOhjYlempiValue6" Height="21" Width="68" Canvas.Top="183" Canvas.Left="425"></TextBox>
-            <TextBox Name="UloOhjYlempiValue7" Height="21" Width="68" Canvas.Top="209" Canvas.Left="425"></TextBox>
-            <TextBox Name="UloOhjYlempiValue8" Height="21" Width="68" Canvas.Top="235" Canvas.Left="425"></TextBox>
-            <TextBox Name="UloOhjYlempiValue9" Height="21" Width="68" Canvas.Top="261" Canvas.Left="425"></TextBox>
-            <TextBox Name="UloOhjYlempiValue10" Height="21" Width="68" Canvas.Top="287" Canvas.Left="425"></TextBox>
-            <TextBox Name="UloOhjYlempiValue11" Height="21" Width="68" Canvas.Top="313" Canvas.Left="425"></TextBox>
-            <TextBox Name="UloOhjYlempiValue12" Height="21" Width="68" Canvas.Top="339" Canvas.Left="425"></TextBox>
-            <TextBox Name="UloOhjYlempiValue13" Height="21" Width="68" Canvas.Top="365" Canvas.Left="425"></TextBox>
-            <TextBox Name="UloOhjYlempiValue14" Height="21" Width="68" Canvas.Top="391" Canvas.Left="425"></TextBox>
-            <TextBox Name="UloOhjYlempiValue15" Height="21" Width="68" Canvas.Top="417" Canvas.Left="425"></TextBox>
-            <TextBox Name="UloOhjYlempiValue16" Height="21" Width="68" Canvas.Top="443" Canvas.Left="425"></TextBox>
-            <TextBox Name="UloOhjYlempiValue17" Height="21" Width="68" Canvas.Top="469" Canvas.Left="425"></TextBox>
-            <TextBox Name="UloOhjYlempiValue18" Height="21" Width="68" Canvas.Top="495" Canvas.Left="425"></TextBox>
+            <TextBox Name="UloOhjYlempiValue1" Height="21" Width="68" Canvas.Top="53" Canvas.Left="425" Tag="uloYla"></TextBox>
+            <TextBox Name="UloOhjYlempiValue2" Height="21" Width="68" Canvas.Top="79" Canvas.Left="425" Tag="uloYla"></TextBox>
+            <TextBox Name="UloOhjYlempiValue3" Height="21" Width="68" Canvas.Top="105" Canvas.Left="425" Tag="uloYla"></TextBox>
+            <TextBox Name="UloOhjYlempiValue4" Height="21" Width="68" Canvas.Top="131" Canvas.Left="425" Tag="uloYla"></TextBox>
+            <TextBox Name="UloOhjYlempiValue5" Height="21" Width="68" Canvas.Top="157" Canvas.Left="425" Tag="uloYla"></TextBox>
+            <TextBox Name="UloOhjYlempiValue6" Height="21" Width="68" Canvas.Top="183" Canvas.Left="425" Tag="uloYla"></TextBox>
+            <TextBox Name="UloOhjYlempiValue7" Height="21" Width="68" Canvas.Top="209" Canvas.Left="425" Tag="uloYla"></TextBox>
+            <TextBox Name="UloOhjYlempiValue8" Height="21" Width="68" Canvas.Top="235" Canvas.Left="425" Tag="uloYla"></TextBox>
+            <TextBox Name="UloOhjYlempiValue9" Height="21" Width="68" Canvas.Top="261" Canvas.Left="425" Tag="uloYla"></TextBox>
+            <TextBox Name="UloOhjYlempiValue10" Height="21" Width="68" Canvas.Top="287" Canvas.Left="425" Tag="uloYla"></TextBox>
+            <TextBox Name="UloOhjYlempiValue11" Height="21" Width="68" Canvas.Top="313" Canvas.Left="425" Tag="uloYla"></TextBox>
+            <TextBox Name="UloOhjYlempiValue12" Height="21" Width="68" Canvas.Top="339" Canvas.Left="425" Tag="uloYla"></TextBox>
+            <TextBox Name="UloOhjYlempiValue13" Height="21" Width="68" Canvas.Top="365" Canvas.Left="425" Tag="uloYla"></TextBox>
+            <TextBox Name="UloOhjYlempiValue14" Height="21" Width="68" Canvas.Top="391" Canvas.Left="425" Tag="uloYla"></TextBox>
+            <TextBox Name="UloOhjYlempiValue15" Height="21" Width="68" Canvas.Top="417" Canvas.Left="425" Tag="uloYla"></TextBox>
+            <TextBox Name="UloOhjYlempiValue16" Height="21" Width="68" Canvas.Top="443" Canvas.Left="425" Tag="uloYla"></TextBox>
+            <TextBox Name="UloOhjYlempiValue17" Height="21" Width="68" Canvas.Top="469" Canvas.Left="425" Tag="uloYla"></TextBox>
+            <TextBox Name="UloOhjYlempiValue18" Height="21" Width="68" Canvas.Top="495" Canvas.Left="425" Tag="uloYla"></TextBox>
             <!--Tallenna-nappi-->
             <Button x:Name="btnTallenna" Height="28" Width="149" Canvas.Left="238" Canvas.Top="539" FontSize="16" RenderTransformOrigin="-0.344,0.745" Content="Tallenna ohjealueet"/>
             <Button x:Name="btnTyhjennaOhjealueet" Height="28" Width="149" Canvas.Left="392" Canvas.Top="539" FontSize="16" RenderTransformOrigin="-0.344,0.745" Content="Tyhjennä ohjealueet" Click="btnTyhjennaOhjealueet_Click"/>
+            <Button x:Name="btnNaytaKaavio" Content="Näytä rakeisuuskäyrä" Canvas.Left="36" Canvas.Top="539" Width="161" Height="28" FontSize="16" Background="#FFD0FF8B" BorderBrush="#FF2F8100" Click="btnNaytaKaavio_Click"/>
         </Canvas>
 
 

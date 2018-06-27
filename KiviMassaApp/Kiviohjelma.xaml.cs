@@ -15,6 +15,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Microsoft.Win32;
+using System.Diagnostics;
+using PdfSharp.Drawing;
+using PdfSharp.Pdf;
 
 namespace KiviMassaApp
 {
@@ -23,6 +26,8 @@ namespace KiviMassaApp
     /// </summary>
     public partial class Kiviohjelma : Window
     {
+        
+
         MainWindow _main;
         List<Seulakirjasto> seulalista = new List<Seulakirjasto>();
         public Kiviohjelma(Window main)
@@ -31,6 +36,7 @@ namespace KiviMassaApp
             _main = (MainWindow)main; //Otetaan aloitusikkuna talteen
             SeulaArvotOhjeArvoihin(); //Laitetaan valitut seula-arvot Ohjealue-ruudun seulakenttiin
             SeulaJsonLataus(); //Ladataan Seulat.json tiedostosta kaikki seula-arvot talteen seulalistaan
+            rbKuivaseulonta.IsChecked = true;
         }
         private void Kiviohjelma_Closed(object sender, EventArgs e)
         {
@@ -39,40 +45,8 @@ namespace KiviMassaApp
             _main.SuljeIkkuna("kivi");
         }
 
-        private void SeulaArvotOhjeArvoihin()
-        {
-            //Kopioi valitut seula-arvot Ohjealue-ruudun seulakenttiin
-            seulaValue1.Text = Seula1.Text.Trim();
-            seulaValue2.Text = Seula2.Text.Trim();
-            seulaValue3.Text = Seula3.Text.Trim();
-            seulaValue4.Text = Seula4.Text.Trim();
-            seulaValue5.Text = Seula5.Text.Trim();
-            seulaValue6.Text = Seula6.Text.Trim();
-            seulaValue7.Text = Seula7.Text.Trim();
-            seulaValue8.Text = Seula8.Text.Trim();
-            seulaValue9.Text = Seula9.Text.Trim();
-            seulaValue10.Text = Seula10.Text.Trim();
-            seulaValue11.Text = Seula11.Text.Trim();
-            seulaValue12.Text = Seula12.Text.Trim();
-            seulaValue13.Text = Seula13.Text.Trim();
-            seulaValue14.Text = Seula14.Text.Trim();
-            seulaValue15.Text = Seula15.Text.Trim();
-            seulaValue16.Text = Seula16.Text.Trim();
-            seulaValue17.Text = Seula17.Text.Trim();
-            seulaValue18.Text = Seula18.Text.Trim();
-        }
-
-
-        private void EmptyFields_Click(object sender, RoutedEventArgs e) //Tyhjennä napin funktio
-        {
-
-            EmptyFields(); //Kutsuu funktiota mikä tyhjentää kaikki tekstikentät seulalaskenta-ruudusta
-            
-        }
-
         private void EmptyFields() //Funktio mikä tyhjentää kaikki tekstikentät seulalaskenta-ruudusta
         {
-
             foreach (Control c in seulaArvot.Children)
             {
                 if (c.GetType() == typeof(TextBox))
@@ -96,12 +70,24 @@ namespace KiviMassaApp
             SeulaArvotOhjeArvoihin();
         }
 
+        KayraInitializer kayrainitializer = new KayraInitializer();
+        private void btnNaytaKaavio_Click(object sender, RoutedEventArgs e) // Avataan käyräikkuna
+        {
+            kayrainitializer.KayraPiirto(this);
+        }
+
+        public void SuljeKayraIkkuna()
+        {
+            kayrainitializer.SuljeKayraIkkuna(); ;
+        }
+
 
 
         private void btnLaske_Click(object sender, RoutedEventArgs e)
         {
             //Ottaa syötetyt tiedot talteen ja suorittaa laskutoimitukset niille
-            EmptyFields(); //tyhjentää tuloskentät
+            
+            EmptyResultFields();//tyhjentää tuloskentät
             int pyoristys = Convert.ToInt32(dbDesimaali.Text);//Otetaan valittu pyöristysarvo ohjelmasta
             List<SyotetytArvot> syotetytarvot = new List<SyotetytArvot>(); //Luo listan johon syötetyt arvot tallennetaan
             syotetytarvot = LuetaanSyotetytArvot(); //Luetaan syotetyt arvot luotuun listaan
@@ -113,6 +99,12 @@ namespace KiviMassaApp
             {
                 //Lasketaan kosteusprosentti jos märkäpaino-kentään on syötetty arvo
                 tbKosteuspros.Text = Math.Round(l.KosteusProsentti(kokomassa, Convert.ToDouble(markapaino.Text)), pyoristys).ToString();
+                //Lasketaan pesutappio
+                if(rbPesuseulonta.IsChecked == true)
+                {
+                    tbPesutappio.Text = Math.Round((Math.Round(Convert.ToDouble(markapaino.Text), pyoristys)) - kokomassa, pyoristys).ToString();
+                }
+               
             }
             
         }
@@ -163,7 +155,6 @@ namespace KiviMassaApp
                         break;
                     case 11:
                         lapaisypros11.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
-                        
                         break;
                     case 12:
                         lapaisypros12.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
@@ -455,6 +446,8 @@ namespace KiviMassaApp
             }
             return sa;
         }
+
+
         private void SeulaJsonLataus()
         {
 
@@ -476,14 +469,12 @@ namespace KiviMassaApp
                     Console.WriteLine("Virhe Kiviohjelma.xaml.cs tiedostossa: Seulat.json tiedoston haussa virhe.  " + e.Message + ",   " + e.StackTrace);
                 }
             }
-            else if (!Directory.Exists(@".\Asetukset"))
+            else if ((!Directory.Exists(@".\Asetukset")) || (Directory.Exists(@".\Asetukset") && !File.Exists(@".\Asetukset\Seulat.json")))
             {
-                Directory.CreateDirectory(@".\Asetukset");
-                SeulaArvoJSONLuonti.SeulaJSONLuonti();
-                SeulaJsonLataus();
-            }
-            else if (Directory.Exists(@".\Asetukset") && !File.Exists(@".\Asetukset\Seulat.json"))
-            {
+                if (!Directory.Exists(@".\Asetukset"))
+                {
+                    Directory.CreateDirectory(@".\Asetukset");
+                }
                 SeulaArvoJSONLuonti.SeulaJSONLuonti();
                 SeulaJsonLataus();
             }
@@ -573,10 +564,317 @@ namespace KiviMassaApp
             //Sulkee ikkunan
             this.Close();
         }
+
+        private void CreatePDF_Click(object sender, RoutedEventArgs e) //Luo PDF menupainikkeen Click funktio
+        {
+
+
+            //Avaa tallennus dialogin, joka tallentaa tiedoston oletuksena PDF-muodossa 
+            SaveFileDialog fileDialog = new SaveFileDialog();
+            fileDialog.Filter = "PDF Document (*.pdf)|*.pdf";
+            fileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+            if (fileDialog.ShowDialog() == true)
+            {
+                try
+                {
+                    FileStream fs = (FileStream)fileDialog.OpenFile();
+
+                    fs.Close();
+
+                }
+                catch (IOException ex)
+                {
+                    MessageBox.Show("Tiedosto avattu toisessa ohjelmassa", ex.Message);
+                }
+
+
+            }
+
+            //Ottaa syötetyn tiedoston nimen sekä polun ja antaa sen parametrina PDFCreation funktiolle
+            string text = fileDialog.FileName;
+            Console.WriteLine(text);
+
+            PDFCreation(text);
+
+        }
+
+        private void PDFCreation(string fileName) //Funktio mikä luo PDF-tiedostoon labelit, otsikot sekä ottaa tarvittavat arvot
+        {
+            PdfDocument document = new PdfDocument();
+            document.Info.Title = "Seulonnantulos";
+
+            PdfPage page = document.AddPage();
+
+            XGraphics graphics = XGraphics.FromPdfPage(page);
+
+            //Fonttien määritykset
+            XFont font = new XFont("Verdanna", 15, XFontStyle.Regular);
+            XFont textFont = new XFont("Verdanna", 10, XFontStyle.Regular);
+            XFont otsikkoFont = new XFont("Verdanna", 15, XFontStyle.Bold);
+            XFont alaOtsikkoFont = new XFont("Verdanna", 7, XFontStyle.Regular);
+            XFont osoiteFont = new XFont("Verdanna", 7, XFontStyle.Regular);
+
+            GetValueFromTextBoxes(); //Kutsuu funktiota mikä määrittää tekstilaatikoiden arvot
+
+            //Piirtää tarvittavat otsikot ja niiden arvot PDF-tiedostoon
+            graphics.DrawImage(XImage.FromFile(@".\Asetukset\kuvat\savonialogo1.jpg"), 10, 0, 120, 30);
+            graphics.DrawString(alaOtsikkoHolder, alaOtsikkoFont, XBrushes.Black, new XRect(50, 25, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(osoiteHolder, osoiteFont, XBrushes.Black, new XRect(50, 33, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(postiHolder, osoiteFont, XBrushes.Black, new XRect(50, 40, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(puhHolder, osoiteFont, XBrushes.Black, new XRect(50, 48, page.Width, page.Height), XStringFormats.TopLeft);
+
+
+            graphics.DrawString("KIVIAINESTUTKIMUS", otsikkoFont, XBrushes.Black, new XRect(280, 50, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(seulontaHolder, textFont, XBrushes.Black, new XRect(450, 55, page.Width, page.Height), XStringFormats.TopLeft);
+
+            graphics.DrawString("SFS-EN 933-1", textFont, XBrushes.Black, new XRect(450, 40, page.Width, page.Height), XStringFormats.TopLeft);
+
+            graphics.DrawString("Työmaa", textFont, XBrushes.Black, new XRect(50, 80, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(tyomaaHolder, textFont, XBrushes.Black, new XRect(100, 80, page.Width, page.Height), XStringFormats.TopLeft);
+
+            graphics.DrawString("Lajite", textFont, XBrushes.Black, new XRect(50, 95, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(lajiteHolder, textFont, XBrushes.Black, new XRect(100, 95, page.Width, page.Height), XStringFormats.TopLeft);
+
+            graphics.DrawString(lisatietoHolder, textFont, XBrushes.Black, new XRect(50, 120, page.Width, page.Height), XStringFormats.TopLeft);
+
+            graphics.DrawString("Näyte no", textFont, XBrushes.Black, new XRect(80, 80, page.Width, page.Height), XStringFormats.TopCenter);
+            graphics.DrawString(nayteHolder, textFont, XBrushes.Black, new XRect(150, 80, page.Width, page.Height), XStringFormats.TopCenter);
+
+            graphics.DrawString("Päiväys", textFont, XBrushes.Black, new XRect(80, 95, page.Width, page.Height), XStringFormats.TopCenter);
+            graphics.DrawString(dateHolder, textFont, XBrushes.Black, new XRect(170, 95, page.Width, page.Height), XStringFormats.TopCenter);
+
+            graphics.DrawString("Näytteen ottaja", textFont, XBrushes.Black, new XRect(95, 120, page.Width, page.Height), XStringFormats.TopCenter);
+            graphics.DrawString(nayteOttajaHolder, textFont, XBrushes.Black, new XRect(185, 120, page.Width, page.Height), XStringFormats.TopCenter);
+
+            //Piirtää seulojen arvot PDF-dokumenttiin
+            graphics.DrawString("#mm", textFont, XBrushes.Black, new XRect(50, 150, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(Seula1.Text, textFont, XBrushes.Black, new XRect(50, 160, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(Seula2.Text, textFont, XBrushes.Black, new XRect(50, 175, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(Seula3.Text, textFont, XBrushes.Black, new XRect(50, 190, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(Seula4.Text, textFont, XBrushes.Black, new XRect(50, 205, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(Seula5.Text, textFont, XBrushes.Black, new XRect(50, 220, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(Seula6.Text, textFont, XBrushes.Black, new XRect(50, 235, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(Seula7.Text, textFont, XBrushes.Black, new XRect(50, 250, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(Seula8.Text, textFont, XBrushes.Black, new XRect(50, 265, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(Seula9.Text, textFont, XBrushes.Black, new XRect(50, 280, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(Seula10.Text, textFont, XBrushes.Black, new XRect(50, 295, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(Seula11.Text, textFont, XBrushes.Black, new XRect(50, 310, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(Seula12.Text, textFont, XBrushes.Black, new XRect(50, 325, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(Seula13.Text, textFont, XBrushes.Black, new XRect(50, 340, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(Seula14.Text, textFont, XBrushes.Black, new XRect(50, 355, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(Seula15.Text, textFont, XBrushes.Black, new XRect(50, 370, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(Seula16.Text, textFont, XBrushes.Black, new XRect(50, 385, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(Seula17.Text, textFont, XBrushes.Black, new XRect(50, 400, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(Seula18.Text, textFont, XBrushes.Black, new XRect(50, 415, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString("Pohja", textFont, XBrushes.Black, new XRect(50, 430, page.Width, page.Height), XStringFormats.TopLeft);
+
+            //Piirtää seuloille jäävien grammojen arvot PDF-dokumenttiin
+            graphics.DrawString("Seulalle jäi g", textFont, XBrushes.Black, new XRect(150, 150, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(seulaG0.Text, textFont, XBrushes.Black, new XRect(150, 160, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(seulaG1.Text, textFont, XBrushes.Black, new XRect(150, 175, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(seulaG2.Text, textFont, XBrushes.Black, new XRect(150, 190, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(seulaG3.Text, textFont, XBrushes.Black, new XRect(150, 205, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(seulaG4.Text, textFont, XBrushes.Black, new XRect(150, 220, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(seulaG5.Text, textFont, XBrushes.Black, new XRect(150, 235, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(seulaG6.Text, textFont, XBrushes.Black, new XRect(150, 250, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(seulaG7.Text, textFont, XBrushes.Black, new XRect(150, 265, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(seulaG8.Text, textFont, XBrushes.Black, new XRect(150, 280, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(seulaG9.Text, textFont, XBrushes.Black, new XRect(150, 295, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(seulaG10.Text, textFont, XBrushes.Black, new XRect(150, 310, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(seulaG11.Text, textFont, XBrushes.Black, new XRect(150, 325, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(seulaG12.Text, textFont, XBrushes.Black, new XRect(150, 340, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(seulaG13.Text, textFont, XBrushes.Black, new XRect(150, 355, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(seulaG14.Text, textFont, XBrushes.Black, new XRect(150, 370, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(seulaG15.Text, textFont, XBrushes.Black, new XRect(150, 385, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(seulaG16.Text, textFont, XBrushes.Black, new XRect(150, 400, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(seulaG17.Text, textFont, XBrushes.Black, new XRect(150, 415, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(seulaG18.Text, textFont, XBrushes.Black, new XRect(150, 430, page.Width, page.Height), XStringFormats.TopLeft);
+
+            //Piirtää seuloilla jäävien prosenttien arvot PDF-dokumenttiin
+            graphics.DrawString("Seulalle jäi %", textFont, XBrushes.Black, new XRect(250, 150, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(seulapros1.Text, textFont, XBrushes.Black, new XRect(250, 160, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(seulapros2.Text, textFont, XBrushes.Black, new XRect(250, 175, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(seulapros3.Text, textFont, XBrushes.Black, new XRect(250, 190, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(seulapros4.Text, textFont, XBrushes.Black, new XRect(250, 205, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(seulapros5.Text, textFont, XBrushes.Black, new XRect(250, 220, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(seulapros6.Text, textFont, XBrushes.Black, new XRect(250, 235, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(seulapros7.Text, textFont, XBrushes.Black, new XRect(250, 250, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(seulapros8.Text, textFont, XBrushes.Black, new XRect(250, 265, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(seulapros9.Text, textFont, XBrushes.Black, new XRect(250, 280, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(seulapros10.Text, textFont, XBrushes.Black, new XRect(250, 295, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(seulapros11.Text, textFont, XBrushes.Black, new XRect(250, 310, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(seulapros12.Text, textFont, XBrushes.Black, new XRect(250, 325, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(seulapros13.Text, textFont, XBrushes.Black, new XRect(250, 340, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(seulapros14.Text, textFont, XBrushes.Black, new XRect(250, 355, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(seulapros15.Text, textFont, XBrushes.Black, new XRect(250, 370, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(seulapros16.Text, textFont, XBrushes.Black, new XRect(250, 385, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(seulapros17.Text, textFont, XBrushes.Black, new XRect(250, 400, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(seulapros18.Text, textFont, XBrushes.Black, new XRect(250, 415, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(seulapros19.Text, textFont, XBrushes.Black, new XRect(250, 430, page.Width, page.Height), XStringFormats.TopLeft);
+
+            //Piirtää läpäisy % arvot PDF-dokumenttiin
+            graphics.DrawString("Läpäisy %", textFont, XBrushes.Black, new XRect(350, 150, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(lapaisypros1.Text, textFont, XBrushes.Black, new XRect(350, 160, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(lapaisypros2.Text, textFont, XBrushes.Black, new XRect(350, 175, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(lapaisypros3.Text, textFont, XBrushes.Black, new XRect(350, 190, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(lapaisypros4.Text, textFont, XBrushes.Black, new XRect(350, 205, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(lapaisypros5.Text, textFont, XBrushes.Black, new XRect(350, 220, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(lapaisypros6.Text, textFont, XBrushes.Black, new XRect(350, 235, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(lapaisypros7.Text, textFont, XBrushes.Black, new XRect(350, 250, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(lapaisypros8.Text, textFont, XBrushes.Black, new XRect(350, 265, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(lapaisypros9.Text, textFont, XBrushes.Black, new XRect(350, 280, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(lapaisypros10.Text, textFont, XBrushes.Black, new XRect(350, 295, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(lapaisypros11.Text, textFont, XBrushes.Black, new XRect(350, 310, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(lapaisypros12.Text, textFont, XBrushes.Black, new XRect(350, 325, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(lapaisypros13.Text, textFont, XBrushes.Black, new XRect(350, 340, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(lapaisypros14.Text, textFont, XBrushes.Black, new XRect(350, 355, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(lapaisypros15.Text, textFont, XBrushes.Black, new XRect(350, 370, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(lapaisypros16.Text, textFont, XBrushes.Black, new XRect(350, 385, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(lapaisypros17.Text, textFont, XBrushes.Black, new XRect(350, 400, page.Width, page.Height), XStringFormats.TopLeft);
+            graphics.DrawString(lapaisypros18.Text, textFont, XBrushes.Black, new XRect(350, 415, page.Width, page.Height), XStringFormats.TopLeft);
+
+            try
+            {
+                document.Save(fileName);
+
+                Process.Start(fileName);
+            }
+            catch (System.ArgumentException ex)
+            {
+                MessageBox.Show("Tyhjä tiedoston nimi", ex.Message);
+            }
+
+        }
+
+        //Holderit tekstilaatikoille ja alasvetovalikoille
+        string tyomaaHolder;
+        string lajiteHolder;
+        string seulontaHolder;
+        string nayteHolder;
+        string dateHolder;
+        string nayteOttajaHolder;
+        string lisatietoHolder;
+        string alaOtsikkoHolder;
+        string osoiteHolder;
+        string postiHolder;
+        string puhHolder;
+
+
+        public void GetValueFromTextBoxes() //Funktio ottaa tekstilaatikoista arvot ja asettaa ne holder-muuttujille 
+        {
+            tyomaaHolder = tyomaa.Text.Trim();
+            lajiteHolder = lajite.Text.Trim();
+            nayteHolder = nayteNro.Text.Trim();
+            dateHolder = date.Text.Trim();
+            nayteOttajaHolder = naytteenOttaja.Text.Trim();
+            lisatietoHolder = lisatieto.Text.Trim();
+            alaOtsikkoHolder = alempiOtsikko.Text.Trim();
+            osoiteHolder = lahiosoite.Text.Trim();
+            postiHolder = osoite.Text.Trim();
+            puhHolder = puh.Text.Trim();
+
+
+            if (rbKuivaseulonta.IsChecked == true) //Tarkastaa kumpi radiobuttoneista on valittuna
+            {
+                seulontaHolder = rbKuivaseulonta.Content.ToString().Trim();
+            }
+            else
+            {
+                seulontaHolder = rbPesuseulonta.Content.ToString().Trim();
+            }
+        }
+
+
+
+
+
+
+
+
         private void Seula_DropDownClosed(object sender, EventArgs e)
         {
             //Kun valitsee uuden seulan seuladropdown valikoista, päivitetään seula-arvot ohjearvojen seuloihin
             SeulaArvotOhjeArvoihin();
         }
+        private void SeulaArvotOhjeArvoihin()
+        {
+            //Kopioi valitut seula-arvot Ohjealue-ruudun seulakenttiin
+            seulaValue1.Text = Seula1.Text.Trim();
+            seulaValue2.Text = Seula2.Text.Trim();
+            seulaValue3.Text = Seula3.Text.Trim();
+            seulaValue4.Text = Seula4.Text.Trim();
+            seulaValue5.Text = Seula5.Text.Trim();
+            seulaValue6.Text = Seula6.Text.Trim();
+            seulaValue7.Text = Seula7.Text.Trim();
+            seulaValue8.Text = Seula8.Text.Trim();
+            seulaValue9.Text = Seula9.Text.Trim();
+            seulaValue10.Text = Seula10.Text.Trim();
+            seulaValue11.Text = Seula11.Text.Trim();
+            seulaValue12.Text = Seula12.Text.Trim();
+            seulaValue13.Text = Seula13.Text.Trim();
+            seulaValue14.Text = Seula14.Text.Trim();
+            seulaValue15.Text = Seula15.Text.Trim();
+            seulaValue16.Text = Seula16.Text.Trim();
+            seulaValue17.Text = Seula17.Text.Trim();
+            seulaValue18.Text = Seula18.Text.Trim();
+        }
+
+
+        private void EmptyFields_Click(object sender, RoutedEventArgs e) //Tyhjennä napin funktio
+        {
+
+            EmptyFields();
+            //Kutsuu funktiota mikä tyhjentää kaikki tekstikentät seulalaskenta-ruudusta
+
+        }
+        private void EmptyResultFields() //Tyhjentää tulosruuduissa olevat arvot
+        {
+
+            seulapros1.Text = String.Empty;
+            seulapros2.Text = String.Empty;
+            seulapros3.Text = String.Empty;
+            seulapros4.Text = String.Empty;
+            seulapros5.Text = String.Empty;
+            seulapros6.Text = String.Empty;
+            seulapros7.Text = String.Empty;
+            seulapros8.Text = String.Empty;
+            seulapros9.Text = String.Empty;
+            seulapros10.Text = String.Empty;
+            seulapros11.Text = String.Empty;
+            seulapros12.Text = String.Empty;
+            seulapros13.Text = String.Empty;
+            seulapros14.Text = String.Empty;
+            seulapros15.Text = String.Empty;
+            seulapros16.Text = String.Empty;
+            seulapros17.Text = String.Empty;
+            seulapros18.Text = String.Empty;
+            seulapros19.Text = String.Empty;
+
+            lapaisypros1.Text = String.Empty;
+            lapaisypros2.Text = String.Empty;
+            lapaisypros3.Text = String.Empty;
+            lapaisypros4.Text = String.Empty;
+            lapaisypros5.Text = String.Empty;
+            lapaisypros6.Text = String.Empty;
+            lapaisypros7.Text = String.Empty;
+            lapaisypros8.Text = String.Empty;
+            lapaisypros9.Text = String.Empty;
+            lapaisypros10.Text = String.Empty;
+            lapaisypros11.Text = String.Empty;
+            lapaisypros12.Text = String.Empty;
+            lapaisypros13.Text = String.Empty;
+            lapaisypros14.Text = String.Empty;
+            lapaisypros15.Text = String.Empty;
+            lapaisypros16.Text = String.Empty;
+            lapaisypros17.Text = String.Empty;
+            lapaisypros18.Text = String.Empty;
+
+            punnittuYhteensa.Text = String.Empty;
+            tbKosteuspros.Text = String.Empty;
+
+        }
+
+
     }
 }

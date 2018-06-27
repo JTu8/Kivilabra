@@ -28,8 +28,6 @@ namespace KiviMassaApp
 
         private void OpenKivi(object sender, RoutedEventArgs e) //Avaa kiviohjelman
         {
-            Console.WriteLine("Kivi avattu");
-            
             if (_kivi == null)
             {
                 _kivi = new Kiviohjelma(this);
@@ -39,14 +37,13 @@ namespace KiviMassaApp
             {
                 _kivi.Activate();
             }
-            Console.WriteLine(_kivi);
         }
 
         private void OpenMassa(object sender, RoutedEventArgs e) //Avaa massaohjelman
         {
             if (_massa == null)
             {
-                _massa = new Massaohjelma();
+                _massa = new Massaohjelma(this);
                 _massa.Show();
             }
             else
