@@ -34,7 +34,7 @@ namespace KiviMassaApp
             }
             return tulos;
         }
-        public List<SyotetytArvot> LapaisyProsentti(List<SyotetytArvot> r, double m)
+        public List<SyotetytArvot> LapaisyProsentti(List<SyotetytArvot> r, double m, int jakoindex, double kerroin)
         {
             //prosenttimäärä massasta mikä meni seulasta läpi
             //100-SUM(100*r/m)
@@ -53,8 +53,15 @@ namespace KiviMassaApp
                     if (ra.syote.HasValue && ra.syote.ToString() != "")
                     {
                         //Lisää ensimmäisen tuloksen tuloslistaan
-
-                        tulos.Add(new SyotetytArvot() { index = ra.index, syote = (100 - (100 * ra.syote / m)) });
+                        if(ra.index >= jakoindex)
+                        {
+                            tulos.Add(new SyotetytArvot() { index = ra.index, syote = (100 - (100 * (ra.syote * kerroin)/ m)) });
+                        }
+                        else
+                        {
+                            tulos.Add(new SyotetytArvot() { index = ra.index, syote = (100 - (100 * ra.syote / m)) });
+                        }
+                        
                         //Console.WriteLine("Lisätään ensimmäinen luku");
                     }
                 }
@@ -64,8 +71,16 @@ namespace KiviMassaApp
                     {
                         if (l+1 < r.Count)
                         {
+                            if (ra.index >= jakoindex)
+                            {
+                                tulos.Add(new SyotetytArvot() { index = ra.index, syote = (tulos[tulos.Count - 1].syote - (100 * (ra.syote * kerroin) / m))  });
+                            }
+                            else
+                            {
+                                tulos.Add(new SyotetytArvot() { index = ra.index, syote = (tulos[tulos.Count - 1].syote - (100 * ra.syote / m)) });
+                            }
                             //Lisää kaikki välissä olevat tulokset tuloslistaan
-                            tulos.Add(new SyotetytArvot() { index = ra.index, syote = (tulos[tulos.Count-1].syote - (100 * ra.syote / m)) });
+                            
                         }
                         else
                         {

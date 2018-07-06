@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace KiviMassaApp
 {
-    public class Seulakirjasto : IComparable<Seulakirjasto> //Käytetään seulalistan luomiseen
+    public class Seulakirjasto : IComparable<Seulakirjasto>//Käytetään seulalistan luomiseen
     {
         public double seula { get; set; }
 

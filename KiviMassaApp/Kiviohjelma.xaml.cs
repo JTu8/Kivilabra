@@ -30,14 +30,60 @@ namespace KiviMassaApp
 
         MainWindow _main;
         List<Seulakirjasto> seulalista = new List<Seulakirjasto>();
+        List<Osoitteet> _osoitteet = new List<Osoitteet>();
+        //private Window _pdfAsetukset;
         public Kiviohjelma(Window main)
         {
             InitializeComponent();
             _main = (MainWindow)main; //Otetaan aloitusikkuna talteen
             SeulaArvotOhjeArvoihin(); //Laitetaan valitut seula-arvot Ohjealue-ruudun seulakenttiin
             SeulaJsonLataus(); //Ladataan Seulat.json tiedostosta kaikki seula-arvot talteen seulalistaan
+            OsoiteJsonLataus(); //Ladataan Osoitetiedot.json tiedostosta kaikki osoitetiedot listaan talteen
+            GetOsoitteetToTextBoxes(); //Luetaan osoitetiedot listasta tekstikenttiin
+            
+
+            foreach (Control c in seulaArvot.Children)
+            {
+                if (c.GetType() == typeof(ComboBox)) //jos esineen tyyppi on combobox
+                {
+                    if (((ComboBox)c).Tag.ToString() != null) //Jos comboboxin tagi ei ole tyhjä
+                    {
+                        if (((ComboBox)c).Tag.ToString() == "seula") //jos comboboxin tagi on "seula" tai "jakoseula", eli kaikki seuladropdown-valikot
+                        {
+                            foreach (Seulakirjasto s in seulalista)
+                            {
+                                ((ComboBox)c).Items.Add(s.seula);//Listätään seulavaihtoehdot seulavalikkoihin
+                            }
+                        }
+                    }
+
+                }
+            }
+            //Asettaa joitain default arvoja seulakenttiin
+            Seula1.SelectedIndex = 0;
+            Seula2.SelectedIndex = 1;
+            Seula3.SelectedIndex = 4;
+            Seula4.SelectedIndex = 6;
+            Seula5.SelectedIndex = 7;
+            Seula6.SelectedIndex = 9;
+            Seula7.SelectedIndex = 11;
+            Seula8.SelectedIndex = 12;
+            Seula9.SelectedIndex = 14;
+            Seula10.SelectedIndex = 16;
+            Seula11.SelectedIndex = 19;
+            Seula12.SelectedIndex = 20;
+            Seula13.SelectedIndex = 22;
+            Seula14.SelectedIndex = 23;
+            Seula15.SelectedIndex = 25;
+            Seula16.SelectedIndex = 28;
+            Seula17.SelectedIndex = 29;
+            Seula18.SelectedIndex = 30;
+
+            AsetaJakoSeulaValikonArvot();
+            
             rbKuivaseulonta.IsChecked = true;
         }
+        
         private void Kiviohjelma_Closed(object sender, EventArgs e)
         {
             //kertoo aloitusikkunalle että ohjelma on suljettu
@@ -85,197 +131,594 @@ namespace KiviMassaApp
 
         private void btnLaske_Click(object sender, RoutedEventArgs e)
         {
+            //Seulalaskurin Laske-napin toiminto
             //Ottaa syötetyt tiedot talteen ja suorittaa laskutoimitukset niille
-            
             EmptyResultFields();//tyhjentää tuloskentät
+            
+            
+            int jakoseulaindex = JakoSeula.SelectedIndex;
             int pyoristys = Convert.ToInt32(dbDesimaali.Text);//Otetaan valittu pyöristysarvo ohjelmasta
             List<SyotetytArvot> syotetytarvot = new List<SyotetytArvot>(); //Luo listan johon syötetyt arvot tallennetaan
             syotetytarvot = LuetaanSyotetytArvot(); //Luetaan syotetyt arvot luotuun listaan
-            double kokomassa = LaskeKokonaisMassa(syotetytarvot, pyoristys); //lasketaan arvojen kokonaismäärä
-            TulostenLasku_SeulalleJai(syotetytarvot, kokomassa, pyoristys); //Lasketaan laskutoimituksia ja syötetään tulokset tuloskenttiin
-            TulostenLasku_LapaisyProsentti(syotetytarvot,kokomassa, pyoristys);//--------||----------
-            Laskut l = new Laskut();
-            if(markapaino.Text != String.Empty)
+
+            if (jakoseulaindex != 0)
             {
-                //Lasketaan kosteusprosentti jos märkäpaino-kentään on syötetty arvo
-                tbKosteuspros.Text = Math.Round(l.KosteusProsentti(kokomassa, Convert.ToDouble(markapaino.Text)), pyoristys).ToString();
-                //Lasketaan pesutappio
-                if(rbPesuseulonta.IsChecked == true)
+                double kerroin = 1;
+                if (tbJakoKerroin.Text != String.Empty && Double.TryParse(tbJakoKerroin.Text, out double r) == true)
                 {
-                    tbPesutappio.Text = Math.Round((Math.Round(Convert.ToDouble(markapaino.Text), pyoristys)) - kokomassa, pyoristys).ToString();
+                    kerroin = Convert.ToDouble(tbJakoKerroin.Text);
                 }
-               
+                else
+                {
+                    kerroin = 1;
+                }
+                double kokomassa = LaskeKokonaisMassa(syotetytarvot, pyoristys, jakoseulaindex, kerroin);
+                TulostenLasku_SeulalleJai(syotetytarvot, kokomassa, pyoristys, jakoseulaindex, kerroin);
+                TulostenLasku_LapaisyProsentti(syotetytarvot, kokomassa, pyoristys, jakoseulaindex, kerroin);
+                foreach (SyotetytArvot s in syotetytarvot)
+                {
+                    if (s.index >= jakoseulaindex)
+                    {
+                        switch (s.index)
+                        {
+                            case 1:
+                                jaettuG0.Text = Math.Round((Convert.ToDouble(s.syote) * kerroin), pyoristys).ToString();
+                                break;
+                            case 2:
+                                jaettuG1.Text = Math.Round((Convert.ToDouble(s.syote) * kerroin), pyoristys).ToString();
+                                break;
+                            case 3:
+                                jaettuG2.Text = Math.Round((Convert.ToDouble(s.syote) * kerroin), pyoristys).ToString();
+                                break;
+                            case 4:
+                                jaettuG3.Text = Math.Round((Convert.ToDouble(s.syote) * kerroin), pyoristys).ToString();
+                                break;
+                            case 5:
+                                jaettuG4.Text = Math.Round((Convert.ToDouble(s.syote) * kerroin), pyoristys).ToString();
+                                break;
+                            case 6:
+                                jaettuG5.Text = Math.Round((Convert.ToDouble(s.syote) * kerroin), pyoristys).ToString();
+                                break;
+                            case 7:
+                                jaettuG6.Text = Math.Round((Convert.ToDouble(s.syote) * kerroin), pyoristys).ToString();
+                                break;
+                            case 8:
+                                jaettuG7.Text = Math.Round((Convert.ToDouble(s.syote) * kerroin), pyoristys).ToString();
+                                break;
+                            case 9:
+                                jaettuG8.Text = Math.Round((Convert.ToDouble(s.syote) * kerroin), pyoristys).ToString();
+                                break;
+                            case 10:
+                                jaettuG9.Text = Math.Round((Convert.ToDouble(s.syote) * kerroin), pyoristys).ToString();
+                                break;
+                            case 11:
+                                jaettuG10.Text = Math.Round((Convert.ToDouble(s.syote) * kerroin), pyoristys).ToString();
+                                break;
+                            case 12:
+                                jaettuG11.Text = Math.Round((Convert.ToDouble(s.syote) * kerroin), pyoristys).ToString();
+                                break;
+                            case 13:
+                                jaettuG12.Text = Math.Round((Convert.ToDouble(s.syote) * kerroin), pyoristys).ToString();
+                                break;
+                            case 14:
+                                jaettuG13.Text = Math.Round((Convert.ToDouble(s.syote) * kerroin), pyoristys).ToString();
+                                break;
+                            case 15:
+                                jaettuG14.Text = Math.Round((Convert.ToDouble(s.syote) * kerroin), pyoristys).ToString();
+                                break;
+                            case 16:
+                                jaettuG15.Text = Math.Round((Convert.ToDouble(s.syote) * kerroin), pyoristys).ToString();
+                                break;
+                            case 17:
+                                jaettuG16.Text = Math.Round((Convert.ToDouble(s.syote) * kerroin), pyoristys).ToString();
+                                break;
+                            case 18:
+                                jaettuG17.Text = Math.Round((Convert.ToDouble(s.syote) * kerroin), pyoristys).ToString();
+                                break;
+                            case 19:
+                                jaettuG18.Text = Math.Round((Convert.ToDouble(s.syote) * kerroin), pyoristys).ToString();
+                                break;
+                            default:
+                                {
+                                    Console.WriteLine("VIRHE Kiviohjelma.xaml.cs tiedostossa: kerrotun jaetun näytteen sijoittelussa tuli virhe");
+                                    break;
+                                }
+                        }
+                    }
+                }
+
+
+                Laskut l = new Laskut();
+                if (markapaino.Text != String.Empty)
+                {
+                    //Lasketaan kosteusprosentti jos märkäpaino-kentään on syötetty arvo
+                    tbKosteuspros.Text = Math.Round(l.KosteusProsentti(kokomassa, Convert.ToDouble(markapaino.Text)), pyoristys).ToString();
+                }
+                if (rbKuivaseulonta.IsChecked == true)
+                {
+                    tbPesutappio.Text = String.Empty;
+                }
+                else if (rbPesuseulonta.IsChecked == true)
+                {
+                    //TO DO: Pesuseulontalaskut
+                    // - tarvitsee kentät Kuivapaino ja Pesty Paino
+                    // - lasketaan myös pesutappio tässä
+                }
+
             }
-            
+            else
+            {
+                double kokomassa = LaskeKokonaisMassa(syotetytarvot, pyoristys, 0, 1); //lasketaan arvojen kokonaismäärä
+                TulostenLasku_SeulalleJai(syotetytarvot, kokomassa, pyoristys, 0, 1); //Lasketaan laskutoimituksia ja syötetään tulokset tuloskenttiin
+                TulostenLasku_LapaisyProsentti(syotetytarvot, kokomassa, pyoristys, 0, 1);//--------||----------
+                Laskut l = new Laskut();
+                if (markapaino.Text != String.Empty)
+                {
+                    //Lasketaan kosteusprosentti jos märkäpaino-kentään on syötetty arvo
+                    tbKosteuspros.Text = Math.Round(l.KosteusProsentti(kokomassa, Convert.ToDouble(markapaino.Text)), pyoristys).ToString();
+                }
+                if (rbKuivaseulonta.IsChecked == true)
+                {
+                    tbPesutappio.Text = String.Empty;
+                }
+                else if (rbPesuseulonta.IsChecked == true)
+                {
+                    //TO DO: Pesuseulontalaskut
+                    // - tarvitsee kentät Kuivapaino ja Pesty Paino
+                    // - lasketaan myös pesutappio tässä
+                    double? pesupaino = null, kuivapaino = null;
+                    double pesutappio;
+                    if(tbPesupaino.Text != String.Empty && Double.TryParse(tbPesupaino.Text, out double r) == true)
+                    {
+                        pesupaino = Convert.ToDouble(tbPesupaino.Text);
+                    }
+                    if (tbKuivapaino.Text != String.Empty && Double.TryParse(tbKuivapaino.Text, out r) == true)
+                    {
+                        kuivapaino = Convert.ToDouble(tbKuivapaino.Text);
+                    }
+                    
+                    if(kuivapaino.HasValue == false)
+                    {
+
+                    }
+                    else
+                    {
+                        if(pesupaino.HasValue == true)
+                        {
+                            pesutappio = Math.Round(Convert.ToDouble((kuivapaino - pesupaino)), pyoristys);
+                        }
+                        else
+                        {
+                            pesutappio = Math.Round(Convert.ToDouble(kuivapaino - Convert.ToDouble(punnittuYhteensa.Text)),pyoristys);
+                        }
+                        tbPesutappio.Text = pesutappio.ToString();
+                        if(jaettuG18.Text == String.Empty)
+                        {
+                            double sl = 0;
+                            if (seulaG18.Text != String.Empty)
+                            {
+                                sl = Convert.ToDouble(seulaG18.Text);
+                            }
+                            seulaG18.Text = Math.Round((sl + pesutappio),pyoristys).ToString();
+                        }
+                        else
+                        {
+                            double sl = 0;
+                            if(jaettuG18.Text != String.Empty)
+                            {
+                                sl = Convert.ToDouble(jaettuG18.Text);
+                            }
+                            jaettuG18.Text = Math.Round((sl + pesutappio),pyoristys).ToString();
+                        }
+                    }
+                    
+                    
+                }
+            }
         }
 
         
 
-        private void TulostenLasku_LapaisyProsentti(List<SyotetytArvot> sa, double kokomassa, int pyoristys)
+        private void TulostenLasku_LapaisyProsentti(List<SyotetytArvot> sa, double kokomassa, int pyoristys, int jakoindex, double kerroin)
         {
             //Luodaan lista jonne tulokset laitetaan
             List<SyotetytArvot> tulos = new List<SyotetytArvot>();
             Laskut laskut = new Laskut();
             //Lasketaan ja syötetään tulokset tulos-listaan
-            tulos = laskut.LapaisyProsentti(sa, kokomassa);
+            tulos = laskut.LapaisyProsentti(sa, kokomassa, jakoindex, kerroin);
             //Käydään lista läpi ja tulostetaan tulokset oikeille kentille
-            foreach(SyotetytArvot s in tulos)
+            if(jakoindex >= 0)
             {
-                switch (s.index)
+                foreach (SyotetytArvot s in tulos)
                 {
-                    case 1:
-                        lapaisypros1.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
-                        break;
-                    case 2:
-                        lapaisypros2.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
-                        break;
-                    case 3:
-                        lapaisypros3.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
-                        break;
-                    case 4:
-                        lapaisypros4.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
-                        break;
-                    case 5:
-                        lapaisypros5.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
-                        break;
-                    case 6:
-                        lapaisypros6.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
-                        break;
-                    case 7:
-                        lapaisypros7.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
-                        break;
-                    case 8:
-                        lapaisypros8.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
-                        break;
-                    case 9:
-                        lapaisypros9.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
-                        break;
-                    case 10:
-                        lapaisypros10.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
-                        break;
-                    case 11:
-                        lapaisypros11.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
-                        break;
-                    case 12:
-                        lapaisypros12.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
-                        break;
-                    case 13:
-                        lapaisypros13.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
-                        break;
-                    case 14:
-                        lapaisypros14.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
-                        break;
-                    case 15:
-                        lapaisypros15.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
-                        break;
-                    case 16:
-                        lapaisypros16.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
-                        break;
-                    case 17:
-                        lapaisypros17.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
-                        break;
-                    case 18:
-                        lapaisypros18.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
-                        break;
-                    default:
-                        {
-                            Console.WriteLine("VIRHE Kiviohjelma.xaml.cs tiedostossa: lapaisypros-kenttiä täydentäessä tuli vastaan outo index luku SyotetytArvot-listasta 'tulos'");
+                    switch (s.index)
+                    {
+                        case 1:
+                            lapaisypros1.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
                             break;
-                        }
+                        case 2:
+                            lapaisypros2.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
+                            break;
+                        case 3:
+                            lapaisypros3.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
+                            break;
+                        case 4:
+                            lapaisypros4.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
+                            break;
+                        case 5:
+                            lapaisypros5.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
+                            break;
+                        case 6:
+                            lapaisypros6.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
+                            break;
+                        case 7:
+                            lapaisypros7.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
+                            break;
+                        case 8:
+                            lapaisypros8.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
+                            break;
+                        case 9:
+                            lapaisypros9.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
+                            break;
+                        case 10:
+                            lapaisypros10.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
+                            break;
+                        case 11:
+                            lapaisypros11.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
+                            break;
+                        case 12:
+                            lapaisypros12.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
+                            break;
+                        case 13:
+                            lapaisypros13.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
+                            break;
+                        case 14:
+                            lapaisypros14.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
+                            break;
+                        case 15:
+                            lapaisypros15.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
+                            break;
+                        case 16:
+                            lapaisypros16.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
+                            break;
+                        case 17:
+                            lapaisypros17.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
+                            break;
+                        case 18:
+                            lapaisypros18.Text = Math.Round(Convert.ToDouble(s.syote), pyoristys).ToString();
+                            break;
+                        default:
+                            {
+                                Console.WriteLine("VIRHE Kiviohjelma.xaml.cs tiedostossa: lapaisypros-kenttiä täydentäessä tuli vastaan outo index luku SyotetytArvot-listasta 'tulos'");
+                                break;
+                            }
+                    }
                 }
             }
-
         }
 
-        private void TulostenLasku_SeulalleJai(List<SyotetytArvot> sa, double kokomassa, int pyoristys)
+        private void TulostenLasku_SeulalleJai(List<SyotetytArvot> sa, double kokomassa, int pyoristys, int jakoindex, double kerroin)
         {
-            for (int l = 0; l < sa.Count; l++)
+            if(jakoindex == 0)
             {
-                //otetaan ja lasketaan yksi tulos
-                Laskut laskut = new Laskut();
-                double tulos = Math.Round(laskut.seulalleJai(Convert.ToDouble(sa[l].syote), kokomassa), pyoristys);
-
-                //Valitaan oikea paikka tulokselle sen indeksin perusteella
-                switch (sa[l].index)
+                for (int l = 0; l < sa.Count; l++)
                 {
-                    case 1:
-                        seulapros1.Text = tulos.ToString();
-                        break;
-                    case 2:
-                        seulapros2.Text = tulos.ToString();
-                        break;
-                    case 3:
-                        seulapros3.Text = tulos.ToString();
-                        break;
-                    case 4:
-                        seulapros4.Text = tulos.ToString();
-                        break;
-                    case 5:
-                        seulapros5.Text = tulos.ToString();
-                        break;
-                    case 6:
-                        seulapros6.Text = tulos.ToString();
-                        break;
-                    case 7:
-                        seulapros7.Text = tulos.ToString();
-                        break;
-                    case 8:
-                        seulapros8.Text = tulos.ToString();
-                        break;
-                    case 9:
-                        seulapros9.Text = tulos.ToString();
-                        break;
-                    case 10:
-                        seulapros10.Text = tulos.ToString();
-                        break;
-                    case 11:
-                        seulapros11.Text = tulos.ToString();
-                        break;
-                    case 12:
-                        seulapros12.Text = tulos.ToString();
-                        break;
-                    case 13:
-                        seulapros13.Text = tulos.ToString();
-                        break;
-                    case 14:
-                        seulapros14.Text = tulos.ToString();
-                        break;
-                    case 15:
-                        seulapros15.Text = tulos.ToString();
-                        break;
-                    case 16:
-                        seulapros16.Text = tulos.ToString();
-                        break;
-                    case 17:
-                        seulapros17.Text = tulos.ToString();
-                        break;
-                    case 18:
-                        seulapros18.Text = tulos.ToString();
-                        break;
-                    case 19:
-                        seulapros19.Text = tulos.ToString();
-                        break;
-                    default:
-                        {
-                            Console.WriteLine("VIRHE Kiviohjelma.xaml.cs tiedostossa: seulapros-kenttiä täydentäessä tuli vastaan outo index luku SyotetytArvot-listasta");
-                            break;
-                        }
-                }
+                    //otetaan ja lasketaan yksi tulos
+                    Laskut laskut = new Laskut();
+                    double tulos = Math.Round(laskut.seulalleJai(Convert.ToDouble(sa[l].syote), kokomassa), pyoristys);
 
+                    //Valitaan oikea paikka tulokselle sen indeksin perusteella
+                    switch (sa[l].index)
+                    {
+                        case 1:
+                            seulapros1.Text = tulos.ToString();
+                            break;
+                        case 2:
+                            seulapros2.Text = tulos.ToString();
+                            break;
+                        case 3:
+                            seulapros3.Text = tulos.ToString();
+                            break;
+                        case 4:
+                            seulapros4.Text = tulos.ToString();
+                            break;
+                        case 5:
+                            seulapros5.Text = tulos.ToString();
+                            break;
+                        case 6:
+                            seulapros6.Text = tulos.ToString();
+                            break;
+                        case 7:
+                            seulapros7.Text = tulos.ToString();
+                            break;
+                        case 8:
+                            seulapros8.Text = tulos.ToString();
+                            break;
+                        case 9:
+                            seulapros9.Text = tulos.ToString();
+                            break;
+                        case 10:
+                            seulapros10.Text = tulos.ToString();
+                            break;
+                        case 11:
+                            seulapros11.Text = tulos.ToString();
+                            break;
+                        case 12:
+                            seulapros12.Text = tulos.ToString();
+                            break;
+                        case 13:
+                            seulapros13.Text = tulos.ToString();
+                            break;
+                        case 14:
+                            seulapros14.Text = tulos.ToString();
+                            break;
+                        case 15:
+                            seulapros15.Text = tulos.ToString();
+                            break;
+                        case 16:
+                            seulapros16.Text = tulos.ToString();
+                            break;
+                        case 17:
+                            seulapros17.Text = tulos.ToString();
+                            break;
+                        case 18:
+                            seulapros18.Text = tulos.ToString();
+                            break;
+                        case 19:
+                            seulapros19.Text = tulos.ToString();
+                            break;
+                        default:
+                            {
+                                Console.WriteLine("VIRHE Kiviohjelma.xaml.cs tiedostossa: seulapros-kenttiä täydentäessä tuli vastaan outo index luku SyotetytArvot-listasta");
+                                break;
+                            }
+                    }
+                }
             }
+            else
+            {
+                for (int l = 0; l < sa.Count; l++)
+                {
+                    //otetaan ja lasketaan yksi tulos
+                    Laskut laskut = new Laskut();
+                    double tulos = laskut.seulalleJai(Convert.ToDouble(sa[l].syote), kokomassa);
+
+                    //Valitaan oikea paikka tulokselle sen indeksin perusteella
+                    switch (sa[l].index)
+                    {
+                        case 1:
+                            if(sa[l].index >= jakoindex)
+                            {
+                                seulapros1.Text = Math.Round((tulos * kerroin), pyoristys).ToString();
+                            }
+                            else
+                            {
+                                seulapros1.Text = Math.Round(tulos, pyoristys).ToString();
+                            }
+                            break;
+                        case 2:
+                            if (sa[l].index >= jakoindex)
+                            {
+                                seulapros2.Text = Math.Round((tulos * kerroin), pyoristys).ToString();
+                            }
+                            else
+                            {
+                                seulapros2.Text = Math.Round(tulos, pyoristys).ToString();
+                            }
+                            break;
+                        case 3:
+                            if (sa[l].index >= jakoindex)
+                            {
+                                seulapros3.Text = Math.Round((tulos * kerroin), pyoristys).ToString();
+                            }
+                            else
+                            {
+                                seulapros3.Text = Math.Round(tulos, pyoristys).ToString();
+                            }
+                            break;
+                        case 4:
+                            if (sa[l].index >= jakoindex)
+                            {
+                                seulapros4.Text = Math.Round((tulos * kerroin), pyoristys).ToString();
+                            }
+                            else
+                            {
+                                seulapros4.Text = Math.Round(tulos, pyoristys).ToString();
+                            }
+                            break;
+                        case 5:
+                            if (sa[l].index >= jakoindex)
+                            {
+                                seulapros5.Text = Math.Round((tulos * kerroin), pyoristys).ToString();
+                            }
+                            else
+                            {
+                                seulapros5.Text = Math.Round(tulos, pyoristys).ToString();
+                            }
+                            break;
+                        case 6:
+                            if (sa[l].index >= jakoindex)
+                            {
+                                seulapros6.Text = Math.Round((tulos * kerroin), pyoristys).ToString();
+                            }
+                            else
+                            {
+                                seulapros6.Text = Math.Round(tulos, pyoristys).ToString();
+                            }
+                            break;
+                        case 7:
+                            if (sa[l].index >= jakoindex)
+                            {
+                                seulapros7.Text = Math.Round((tulos * kerroin), pyoristys).ToString();
+                            }
+                            else
+                            {
+                                seulapros7.Text = Math.Round(tulos, pyoristys).ToString();
+                            }
+                            break;
+                        case 8:
+                            if (sa[l].index >= jakoindex)
+                            {
+                                seulapros8.Text = Math.Round((tulos * kerroin), pyoristys).ToString();
+                            }
+                            else
+                            {
+                                seulapros8.Text = Math.Round(tulos, pyoristys).ToString();
+                            }
+                            break;
+                        case 9:
+                            if (sa[l].index >= jakoindex)
+                            {
+                                seulapros9.Text = Math.Round((tulos * kerroin), pyoristys).ToString();
+                            }
+                            else
+                            {
+                                seulapros9.Text = Math.Round(tulos, pyoristys).ToString();
+                            }
+                            break;
+                        case 10:
+                            if (sa[l].index >= jakoindex)
+                            {
+                                seulapros10.Text = Math.Round((tulos * kerroin), pyoristys).ToString();
+                            }
+                            else
+                            {
+                                seulapros10.Text = Math.Round(tulos, pyoristys).ToString();
+                            }
+                            break;
+                        case 11:
+                            if (sa[l].index >= jakoindex)
+                            {
+                                seulapros11.Text = Math.Round((tulos * kerroin), pyoristys).ToString();
+                            }
+                            else
+                            {
+                                seulapros11.Text = Math.Round(tulos, pyoristys).ToString();
+                            }
+                            break;
+                        case 12:
+                            if (sa[l].index >= jakoindex)
+                            {
+                                seulapros12.Text = Math.Round((tulos * kerroin), pyoristys).ToString();
+                            }
+                            else
+                            {
+                                seulapros12.Text = Math.Round(tulos, pyoristys).ToString();
+                            }
+                            break;
+                        case 13:
+                            if (sa[l].index >= jakoindex)
+                            {
+                                seulapros13.Text = Math.Round((tulos * kerroin), pyoristys).ToString();
+                            }
+                            else
+                            {
+                                seulapros13.Text = Math.Round(tulos, pyoristys).ToString();
+                            }
+                            break;
+                        case 14:
+                            if (sa[l].index >= jakoindex)
+                            {
+                                seulapros14.Text = Math.Round((tulos * kerroin), pyoristys).ToString();
+                            }
+                            else
+                            {
+                                seulapros14.Text = Math.Round(tulos, pyoristys).ToString();
+                            }
+                            break;
+                        case 15:
+                            if (sa[l].index >= jakoindex)
+                            {
+                                seulapros15.Text = Math.Round((tulos * kerroin), pyoristys).ToString();
+                            }
+                            else
+                            {
+                                seulapros15.Text = Math.Round(tulos, pyoristys).ToString();
+                            }
+                            break;
+                        case 16:
+                            if (sa[l].index >= jakoindex)
+                            {
+                                seulapros16.Text = Math.Round((tulos * kerroin), pyoristys).ToString();
+                            }
+                            else
+                            {
+                                seulapros16.Text = Math.Round(tulos, pyoristys).ToString();
+                            }
+                            break;
+                        case 17:
+                            if (sa[l].index >= jakoindex)
+                            {
+                                seulapros17.Text = Math.Round((tulos * kerroin), pyoristys).ToString();
+                            }
+                            else
+                            {
+                                seulapros17.Text = Math.Round(tulos, pyoristys).ToString();
+                            }
+                            break;
+                        case 18:
+                            if (sa[l].index >= jakoindex)
+                            {
+                                seulapros18.Text = Math.Round((tulos * kerroin), pyoristys).ToString();
+                            }
+                            else
+                            {
+                                seulapros18.Text = Math.Round(tulos, pyoristys).ToString();
+                            }
+                            break;
+                        case 19:
+                            if (sa[l].index >= jakoindex)
+                            {
+                                seulapros19.Text = Math.Round((tulos * kerroin), pyoristys).ToString();
+                            }
+                            else
+                            {
+                                seulapros19.Text = Math.Round(tulos, pyoristys).ToString();
+                            }
+                            break;
+                        default:
+                            {
+                                Console.WriteLine("VIRHE Kiviohjelma.xaml.cs tiedostossa: seulapros-kenttiä täydentäessä tuli vastaan outo index luku SyotetytArvot-listasta");
+                                break;
+                            }
+                    }
+                }
+            }
+            
         }
 
-        private double LaskeKokonaisMassa(List<SyotetytArvot> sa, int pyoristys)
+        private double LaskeKokonaisMassa(List<SyotetytArvot> sa, int pyoristys, int jakoindex, double kerroin)
         {
             //laskee syotettyjen arvojen kokonaismassan ja palauttaa sen
             //Listassa on arvot jotka lasketaan yhteen, ja pyoristys-parametri kertoo kuinka tarkasti arvo pyöristetään
             double kokomassa = 0;
-            foreach (SyotetytArvot se in sa)
+            if (jakoindex == 0)
             {
-                kokomassa += Convert.ToDouble(se.syote);
+                foreach (SyotetytArvot se in sa)
+                {
+                    kokomassa += Convert.ToDouble(se.syote);
+                }
+                punnittuYhteensa.Text = Math.Round(kokomassa, pyoristys).ToString();
+                return Math.Round(kokomassa, pyoristys);
             }
-            punnittuYhteensa.Text = Math.Round(kokomassa, pyoristys).ToString();
-            return Math.Round(kokomassa,pyoristys);
+            else
+            {
+                foreach (SyotetytArvot se in sa)
+                {
+                    if (se.index >= jakoindex)
+                    {
+                        kokomassa += Convert.ToDouble((se.syote * kerroin));
+                        
+                    }
+                    else
+                    {
+                        kokomassa += Convert.ToDouble(se.syote);
+                    }
+                }
+                punnittuYhteensa.Text = Math.Round(kokomassa, pyoristys).ToString();
+                return Math.Round(kokomassa, pyoristys);
+            }
+           
         }
 
 
@@ -283,170 +726,55 @@ namespace KiviMassaApp
         {
             //Lukee käyttäjän syöttämät arvot, lisää ne listaan ja palauttaa listan
             //Syötetyissä arvoissa saattaa olla välejä (kaikkeja rivejä ei täytetty) joten koodi tarkistaa sen myös
+            //Koodissa käydään myös läpi se, että käytetäänkö jaettuja näytteitä (eli onko valittu seulaa jakoseulalistasta ja onko asetettu kerrointa)
             List<SyotetytArvot> sa = new List<SyotetytArvot>();
-            double g0, g1, g2, g3, g4, g5, g6, g7, g8, g9, g10, g11, g12, g13, g14, g15, g16, g17,g18;
-            try
+            foreach (Control c in seulaArvot.Children) //Kaikille esineille seulaArvot-canvasissa. Tarkoituksena ottaa syötetyt arvot talteen
             {
-                if (double.TryParse(seulaG0.Text, out g0))
+                if (c.GetType() == typeof(TextBox)) //jos esineen tyyppi on textbox
                 {
-                    SyotetytArvot s = new SyotetytArvot();
-                    g0 = Convert.ToDouble(seulaG0.Text);
-                    s.syote = g0;
-                    s.index = 1;
-                    sa.Add(s);
-                }
-                if (double.TryParse(seulaG1.Text, out g1))
-                {
-                    SyotetytArvot s = new SyotetytArvot();
-                    g1 = Convert.ToDouble(seulaG1.Text);
-                    s.syote = g1;
-                    s.index = 2;
-                    sa.Add(s);
-                }
-                if (double.TryParse(seulaG2.Text, out g2))
-                {
-                    SyotetytArvot s = new SyotetytArvot();
-                    g2 = Convert.ToDouble(seulaG2.Text);
-                    s.syote = g2;
-                    s.index = 3;
-                    sa.Add(s);
-                }
-                if (double.TryParse(seulaG3.Text, out g3))
-                {
-                    SyotetytArvot s = new SyotetytArvot();
-                    g3 = Convert.ToDouble(seulaG3.Text);
-                    s.syote = g3;
-                    s.index = 4;
-                    sa.Add(s);
-                }
-                if (double.TryParse(seulaG4.Text, out g4))
-                {
-                    SyotetytArvot s = new SyotetytArvot();
-                    g4 = Convert.ToDouble(seulaG4.Text);
-                    s.syote = g4;
-                    s.index = 5;
-                    sa.Add(s);
-                }
-                if (double.TryParse(seulaG5.Text, out g5))
-                {
-                    SyotetytArvot s = new SyotetytArvot();
-                    g5 = Convert.ToDouble(seulaG5.Text);
-                    s.syote = g5;
-                    s.index = 6;
-                    sa.Add(s);
-                }
-                if (double.TryParse(seulaG6.Text, out g6))
-                {
-                    SyotetytArvot s = new SyotetytArvot();
-                    g6 = Convert.ToDouble(seulaG6.Text);
-                    s.syote = g6;
-                    s.index = 7;
-                    sa.Add(s);
-                }
-                if (double.TryParse(seulaG7.Text, out g7))
-                {
-                    SyotetytArvot s = new SyotetytArvot();
-                    g7 = Convert.ToDouble(seulaG7.Text);
-                    s.syote = g7;
-                    s.index = 8;
-                    sa.Add(s);
-                }
-                if (double.TryParse(seulaG8.Text, out g8))
-                {
-                    SyotetytArvot s = new SyotetytArvot();
-                    g8 = Convert.ToDouble(seulaG8.Text);
-                    s.syote = g8;
-                    s.index = 9;
-                    sa.Add(s);
-                }
-                if (double.TryParse(seulaG9.Text, out g9))
-                {
-                    SyotetytArvot s = new SyotetytArvot();
-                    g9 = Convert.ToDouble(seulaG9.Text);
-                    s.syote = g9;
-                    s.index = 10;
-                    sa.Add(s);
-                }
-                if (double.TryParse(seulaG10.Text, out g10))
-                {
-                    SyotetytArvot s = new SyotetytArvot();
-                    g10 = Convert.ToDouble(seulaG10.Text);
-                    s.syote = g10;
-                    s.index = 11;
-                    sa.Add(s);
-                }
-                if (double.TryParse(seulaG11.Text, out g11))
-                {
-                    SyotetytArvot s = new SyotetytArvot();
-                    g11 = Convert.ToDouble(seulaG11.Text);
-                    s.syote = g11;
-                    s.index = 12;
-                    sa.Add(s);
-                }
-                if (double.TryParse(seulaG12.Text, out g12))
-                {
-                    SyotetytArvot s = new SyotetytArvot();
-                    g12 = Convert.ToDouble(seulaG12.Text);
-                    s.syote = g12;
-                    s.index = 13;
-                    sa.Add(s);
-                }
-                if (double.TryParse(seulaG13.Text, out g13))
-                {
-                    SyotetytArvot s = new SyotetytArvot();
-                    g13 = Convert.ToDouble(seulaG13.Text);
-                    s.syote = g13;
-                    s.index = 14;
-                    sa.Add(s);
-                }
-                if (double.TryParse(seulaG14.Text, out g14))
-                {
-                    SyotetytArvot s = new SyotetytArvot();
-                    g14 = Convert.ToDouble(seulaG14.Text);
-                    s.syote = g14;
-                    s.index = 15;
-                    sa.Add(s);
-                }
-                if (double.TryParse(seulaG15.Text, out g15))
-                {
-                    SyotetytArvot s = new SyotetytArvot();
-                    g15 = Convert.ToDouble(seulaG15.Text);
-                    s.syote = g15;
-                    s.index = 16;
-                    sa.Add(s);
-                }
-                if (double.TryParse(seulaG16.Text, out g16))
-                {
-                    SyotetytArvot s = new SyotetytArvot();
-                    g16 = Convert.ToDouble(seulaG16.Text);
-                    s.syote = g16;
-                    s.index = 17;
-                    sa.Add(s);
-                }
-                if (double.TryParse(seulaG17.Text, out g17))
-                {
-                    SyotetytArvot s = new SyotetytArvot();
-                    g17 = Convert.ToDouble(seulaG17.Text);
-                    s.syote = g17;
-                    s.index = 18;
-                    sa.Add(s);
-                }
-                if (double.TryParse(seulaG18.Text, out g18))
-                {
-                    SyotetytArvot s = new SyotetytArvot();
-                    g18 = Convert.ToDouble(seulaG18.Text);
-                    s.syote = g18;
-                    s.index = 19;
-                    sa.Add(s);
-                }
-            }
-            catch
-            {
+                    if (((TextBox)c).Tag.ToString() != null) //Jos textboxin tagi ei ole tyhjä
+                    {
+                        if (((TextBox)c).Tag.ToString() == "arvo") //jos textboxin tagi on "arvo"
+                        {
+                            if (((TextBox)c).Text != String.Empty && Double.TryParse(((TextBox)c).Text, out double r) == true)
+                            {
+                                SyotetytArvot s = new SyotetytArvot();
+                                string seulatxt = ((TextBox)c).Text;//otetaan valittu syöte talteen
+                                seulatxt = seulatxt.Replace(".", ",");//Korvataan pisteet pilkuilla
+                                double g = Convert.ToDouble(seulatxt);
+                                string n = ((TextBox)c).Name; //otetaan objektin nimi talteen
+                                int index = Convert.ToInt32(Regex.Match(n, @"\d+$").Value);//otetaan objektin järjestysnumero nimestä
+                                s.syote = g;
+                                s.index = (index + 1);
+                                sa.Add(s);
+                            }
 
+                        }
+                    }
+
+                }
             }
-            return sa;
+            /*Console.WriteLine("Perus");
+            foreach (SyotetytArvot s in sa)
+            {
+                Console.WriteLine(s.index+", "+s.syote);
+            }*/
+            return sa;  
         }
 
+
+        private void rbPesuseulonta_Checked(object sender, RoutedEventArgs e)
+        {
+            tbKuivapaino.IsEnabled = true;
+            tbPesupaino.IsEnabled = true;
+            tbPesutappio.IsEnabled = true;
+        }
+        private void rbKuivaseulonta_Checked(object sender, RoutedEventArgs e)
+        {
+            tbKuivapaino.IsEnabled = false;
+            tbPesupaino.IsEnabled = false;
+            tbPesutappio.IsEnabled = false;
+        }
 
         private void SeulaJsonLataus()
         {
@@ -479,6 +807,85 @@ namespace KiviMassaApp
                 SeulaJsonLataus();
             }
         }
+
+        private void OsoiteJsonLataus()
+        {
+            //Tarkistetaan onko Osoitetiedot.json tiedostoa ja sen isäntäkansiota olemassa
+            //Jos on, luetaan seulatiedot tiedostosta listaan
+            //Jos ei, luodaan tiedosto ja kansio tarpeen mukaan ja luetaan seulat sitten.
+
+            string osoitejson;
+            if (File.Exists(@".\Asetukset\Osoitetiedot.json") && Directory.Exists(@".\Asetukset"))
+            {
+                try
+                {
+                    StreamReader s = new StreamReader(@".\Asetukset\Osoitetiedot.json");
+                    osoitejson = s.ReadToEnd();
+                    s.Close();
+                    _osoitteet = JsonConvert.DeserializeObject<List<Osoitteet>>(osoitejson);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Virhe Kiviohjelma.xaml.cs tiedostossa: Seulat.json tiedoston haussa virhe.  " + e.Message + ",  " + e.StackTrace);
+                }
+            }
+            else if ((!Directory.Exists(@".\Asetukset")) || (Directory.Exists(@".\Asetukset") && !File.Exists(@".\Asetukset\Osoitetiedot.json")))
+            {
+                if (!Directory.Exists(@".\Asetukset"))
+                {
+                    Directory.CreateDirectory(@".\Asetukset");
+                }
+                OsoiteTiedotJSON.OsoiteJSONLuonti();
+                OsoiteJsonLataus();
+            }
+
+
+        }
+
+        private void GetOsoitteetToTextBoxes() //Lataa osoitetiedot JSON-tiedostosta tekstikenttiin
+        {
+
+            for (int i = 0; i < _osoitteet.Count; i++)
+            {
+                alempiOtsikko.Text = _osoitteet[0].osoiteTieto;
+                lahiosoite.Text = _osoitteet[1].osoiteTieto;
+                osoite.Text = _osoitteet[2].osoiteTieto;
+                puh.Text = _osoitteet[3].osoiteTieto;
+            }
+
+
+        }
+
+        private void tallennaOsoitteet_Click(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < _osoitteet.Count; i++)
+            {
+                _osoitteet[0].osoiteTieto = alempiOtsikko.Text;
+                _osoitteet[1].osoiteTieto = lahiosoite.Text;
+                _osoitteet[2].osoiteTieto = osoite.Text;
+                _osoitteet[3].osoiteTieto = puh.Text;
+            }
+
+            string json = JsonConvert.SerializeObject(_osoitteet);
+            try
+            {
+                if (!Directory.Exists(@".\Asetukset"))
+                {
+                    Directory.CreateDirectory(@".\Asetukset");
+                    File.WriteAllText(@".\Asetukset\Osoitetiedot.json", json);
+                }
+                else
+                {
+                    File.WriteAllText(@".\Asetukset\Osoitetiedot.json", json);
+                }
+                MessageBox.Show("Tiedot tallennettu");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Tietojen tallennus epäonnistui" + ex.Message);
+            }
+        }
+
         private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
         {
             //Kun syötetään tietoja seulakenttiin, tämä funktio varmistaa että vain numeroita ja pilkkuja voi laittaa kenttiin
@@ -496,19 +903,24 @@ namespace KiviMassaApp
         {
             Stream stream = null;
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Multiselect = true;
-            openFileDialog.Filter = "All files (*.*)|*.*|Text files (*.txt)|*.txt";
+            openFileDialog.Multiselect = false;
+            openFileDialog.Filter = "Tallennustiedosto (JSON) (*.json)|*.json";
+            openFileDialog.Title = "Avaa tallennus";
             openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
             if (openFileDialog.ShowDialog() == true)
             {
+                
                 try
                 {
                     if ((stream = openFileDialog.OpenFile()) != null)
                     {
                         using (stream)
                         {
-
+                            StreamReader sr = new StreamReader(stream);
+                            string json = sr.ReadToEnd();
+                            SaveLoadFunc load = new SaveLoadFunc();
+                            load.LoadAll(this, json);
                         }
 
                     }
@@ -532,14 +944,22 @@ namespace KiviMassaApp
         {
             //Avataan tallennusdialogi ja tallennetaan tiedosto haluamaan sijaintiin
             SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "All files (*.*)|*.*|Text files (*.txt)|*.txt";
+            saveFileDialog.Filter = "Tallennustiedosto (JSON) (*.json)|*.json";
+            saveFileDialog.Title = "Tallenna nykyinen sessio";
             saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            SaveLoadFunc sa = new SaveLoadFunc();
+            string json = sa.Save(this, seulalista);
 
             if (saveFileDialog.ShowDialog() == true)
             {
-                FileStream fs = (FileStream)saveFileDialog.OpenFile();
-
-                fs.Close();
+                if (saveFileDialog.FileName != String.Empty || saveFileDialog.FileName != "")
+                {
+                    //FileStream fs = (FileStream)saveFileDialog.OpenFile();
+                    StreamWriter s = new StreamWriter(saveFileDialog.FileName);
+                    s.WriteLine(json);
+                    //fs.Close();
+                    s.Close();
+                }
             }
         }
 
@@ -568,233 +988,29 @@ namespace KiviMassaApp
         private void CreatePDF_Click(object sender, RoutedEventArgs e) //Luo PDF menupainikkeen Click funktio
         {
 
-
-            //Avaa tallennus dialogin, joka tallentaa tiedoston oletuksena PDF-muodossa 
-            SaveFileDialog fileDialog = new SaveFileDialog();
-            fileDialog.Filter = "PDF Document (*.pdf)|*.pdf";
-            fileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-
-            if (fileDialog.ShowDialog() == true)
-            {
-                try
-                {
-                    FileStream fs = (FileStream)fileDialog.OpenFile();
-
-                    fs.Close();
-
-                }
-                catch (IOException ex)
-                {
-                    MessageBox.Show("Tiedosto avattu toisessa ohjelmassa", ex.Message);
-                }
-
-
-            }
-
-            //Ottaa syötetyn tiedoston nimen sekä polun ja antaa sen parametrina PDFCreation funktiolle
-            string text = fileDialog.FileName;
-            Console.WriteLine(text);
-
-            PDFCreation(text);
-
+            KiviohjelmaPDF pdf = new KiviohjelmaPDF();
+            pdf.SavePDF(this);
         }
-
-        private void PDFCreation(string fileName) //Funktio mikä luo PDF-tiedostoon labelit, otsikot sekä ottaa tarvittavat arvot
+        private void btnKuvaTesti_Click(object sender, RoutedEventArgs e)
         {
-            PdfDocument document = new PdfDocument();
-            document.Info.Title = "Seulonnantulos";
+            //Testaa kuvan luontia viivakaaviosta
+            /*KayraImage k = new KayraImage();
+            MemoryStream mem = k.KayraKuva(this);
+            System.Drawing.Image img;
+            img = System.Drawing.Image.FromStream(mem);
+            img.Save(@".\Asetukset\kuvat\kayrakuva.png",System.Drawing.Imaging.ImageFormat.Png);*/
 
-            PdfPage page = document.AddPage();
-
-            XGraphics graphics = XGraphics.FromPdfPage(page);
-
-            //Fonttien määritykset
-            XFont font = new XFont("Verdanna", 15, XFontStyle.Regular);
-            XFont textFont = new XFont("Verdanna", 10, XFontStyle.Regular);
-            XFont otsikkoFont = new XFont("Verdanna", 15, XFontStyle.Bold);
-            XFont alaOtsikkoFont = new XFont("Verdanna", 7, XFontStyle.Regular);
-            XFont osoiteFont = new XFont("Verdanna", 7, XFontStyle.Regular);
-
-            GetValueFromTextBoxes(); //Kutsuu funktiota mikä määrittää tekstilaatikoiden arvot
-
-            //Piirtää tarvittavat otsikot ja niiden arvot PDF-tiedostoon
-            graphics.DrawImage(XImage.FromFile(@".\Asetukset\kuvat\savonialogo1.jpg"), 10, 0, 120, 30);
-            graphics.DrawString(alaOtsikkoHolder, alaOtsikkoFont, XBrushes.Black, new XRect(50, 25, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(osoiteHolder, osoiteFont, XBrushes.Black, new XRect(50, 33, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(postiHolder, osoiteFont, XBrushes.Black, new XRect(50, 40, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(puhHolder, osoiteFont, XBrushes.Black, new XRect(50, 48, page.Width, page.Height), XStringFormats.TopLeft);
-
-
-            graphics.DrawString("KIVIAINESTUTKIMUS", otsikkoFont, XBrushes.Black, new XRect(280, 50, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(seulontaHolder, textFont, XBrushes.Black, new XRect(450, 55, page.Width, page.Height), XStringFormats.TopLeft);
-
-            graphics.DrawString("SFS-EN 933-1", textFont, XBrushes.Black, new XRect(450, 40, page.Width, page.Height), XStringFormats.TopLeft);
-
-            graphics.DrawString("Työmaa", textFont, XBrushes.Black, new XRect(50, 80, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(tyomaaHolder, textFont, XBrushes.Black, new XRect(100, 80, page.Width, page.Height), XStringFormats.TopLeft);
-
-            graphics.DrawString("Lajite", textFont, XBrushes.Black, new XRect(50, 95, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(lajiteHolder, textFont, XBrushes.Black, new XRect(100, 95, page.Width, page.Height), XStringFormats.TopLeft);
-
-            graphics.DrawString(lisatietoHolder, textFont, XBrushes.Black, new XRect(50, 120, page.Width, page.Height), XStringFormats.TopLeft);
-
-            graphics.DrawString("Näyte no", textFont, XBrushes.Black, new XRect(80, 80, page.Width, page.Height), XStringFormats.TopCenter);
-            graphics.DrawString(nayteHolder, textFont, XBrushes.Black, new XRect(150, 80, page.Width, page.Height), XStringFormats.TopCenter);
-
-            graphics.DrawString("Päiväys", textFont, XBrushes.Black, new XRect(80, 95, page.Width, page.Height), XStringFormats.TopCenter);
-            graphics.DrawString(dateHolder, textFont, XBrushes.Black, new XRect(170, 95, page.Width, page.Height), XStringFormats.TopCenter);
-
-            graphics.DrawString("Näytteen ottaja", textFont, XBrushes.Black, new XRect(95, 120, page.Width, page.Height), XStringFormats.TopCenter);
-            graphics.DrawString(nayteOttajaHolder, textFont, XBrushes.Black, new XRect(185, 120, page.Width, page.Height), XStringFormats.TopCenter);
-
-            //Piirtää seulojen arvot PDF-dokumenttiin
-            graphics.DrawString("#mm", textFont, XBrushes.Black, new XRect(50, 150, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(Seula1.Text, textFont, XBrushes.Black, new XRect(50, 160, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(Seula2.Text, textFont, XBrushes.Black, new XRect(50, 175, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(Seula3.Text, textFont, XBrushes.Black, new XRect(50, 190, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(Seula4.Text, textFont, XBrushes.Black, new XRect(50, 205, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(Seula5.Text, textFont, XBrushes.Black, new XRect(50, 220, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(Seula6.Text, textFont, XBrushes.Black, new XRect(50, 235, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(Seula7.Text, textFont, XBrushes.Black, new XRect(50, 250, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(Seula8.Text, textFont, XBrushes.Black, new XRect(50, 265, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(Seula9.Text, textFont, XBrushes.Black, new XRect(50, 280, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(Seula10.Text, textFont, XBrushes.Black, new XRect(50, 295, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(Seula11.Text, textFont, XBrushes.Black, new XRect(50, 310, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(Seula12.Text, textFont, XBrushes.Black, new XRect(50, 325, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(Seula13.Text, textFont, XBrushes.Black, new XRect(50, 340, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(Seula14.Text, textFont, XBrushes.Black, new XRect(50, 355, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(Seula15.Text, textFont, XBrushes.Black, new XRect(50, 370, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(Seula16.Text, textFont, XBrushes.Black, new XRect(50, 385, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(Seula17.Text, textFont, XBrushes.Black, new XRect(50, 400, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(Seula18.Text, textFont, XBrushes.Black, new XRect(50, 415, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString("Pohja", textFont, XBrushes.Black, new XRect(50, 430, page.Width, page.Height), XStringFormats.TopLeft);
-
-            //Piirtää seuloille jäävien grammojen arvot PDF-dokumenttiin
-            graphics.DrawString("Seulalle jäi g", textFont, XBrushes.Black, new XRect(150, 150, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(seulaG0.Text, textFont, XBrushes.Black, new XRect(150, 160, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(seulaG1.Text, textFont, XBrushes.Black, new XRect(150, 175, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(seulaG2.Text, textFont, XBrushes.Black, new XRect(150, 190, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(seulaG3.Text, textFont, XBrushes.Black, new XRect(150, 205, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(seulaG4.Text, textFont, XBrushes.Black, new XRect(150, 220, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(seulaG5.Text, textFont, XBrushes.Black, new XRect(150, 235, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(seulaG6.Text, textFont, XBrushes.Black, new XRect(150, 250, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(seulaG7.Text, textFont, XBrushes.Black, new XRect(150, 265, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(seulaG8.Text, textFont, XBrushes.Black, new XRect(150, 280, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(seulaG9.Text, textFont, XBrushes.Black, new XRect(150, 295, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(seulaG10.Text, textFont, XBrushes.Black, new XRect(150, 310, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(seulaG11.Text, textFont, XBrushes.Black, new XRect(150, 325, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(seulaG12.Text, textFont, XBrushes.Black, new XRect(150, 340, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(seulaG13.Text, textFont, XBrushes.Black, new XRect(150, 355, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(seulaG14.Text, textFont, XBrushes.Black, new XRect(150, 370, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(seulaG15.Text, textFont, XBrushes.Black, new XRect(150, 385, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(seulaG16.Text, textFont, XBrushes.Black, new XRect(150, 400, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(seulaG17.Text, textFont, XBrushes.Black, new XRect(150, 415, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(seulaG18.Text, textFont, XBrushes.Black, new XRect(150, 430, page.Width, page.Height), XStringFormats.TopLeft);
-
-            //Piirtää seuloilla jäävien prosenttien arvot PDF-dokumenttiin
-            graphics.DrawString("Seulalle jäi %", textFont, XBrushes.Black, new XRect(250, 150, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(seulapros1.Text, textFont, XBrushes.Black, new XRect(250, 160, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(seulapros2.Text, textFont, XBrushes.Black, new XRect(250, 175, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(seulapros3.Text, textFont, XBrushes.Black, new XRect(250, 190, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(seulapros4.Text, textFont, XBrushes.Black, new XRect(250, 205, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(seulapros5.Text, textFont, XBrushes.Black, new XRect(250, 220, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(seulapros6.Text, textFont, XBrushes.Black, new XRect(250, 235, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(seulapros7.Text, textFont, XBrushes.Black, new XRect(250, 250, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(seulapros8.Text, textFont, XBrushes.Black, new XRect(250, 265, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(seulapros9.Text, textFont, XBrushes.Black, new XRect(250, 280, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(seulapros10.Text, textFont, XBrushes.Black, new XRect(250, 295, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(seulapros11.Text, textFont, XBrushes.Black, new XRect(250, 310, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(seulapros12.Text, textFont, XBrushes.Black, new XRect(250, 325, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(seulapros13.Text, textFont, XBrushes.Black, new XRect(250, 340, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(seulapros14.Text, textFont, XBrushes.Black, new XRect(250, 355, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(seulapros15.Text, textFont, XBrushes.Black, new XRect(250, 370, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(seulapros16.Text, textFont, XBrushes.Black, new XRect(250, 385, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(seulapros17.Text, textFont, XBrushes.Black, new XRect(250, 400, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(seulapros18.Text, textFont, XBrushes.Black, new XRect(250, 415, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(seulapros19.Text, textFont, XBrushes.Black, new XRect(250, 430, page.Width, page.Height), XStringFormats.TopLeft);
-
-            //Piirtää läpäisy % arvot PDF-dokumenttiin
-            graphics.DrawString("Läpäisy %", textFont, XBrushes.Black, new XRect(350, 150, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(lapaisypros1.Text, textFont, XBrushes.Black, new XRect(350, 160, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(lapaisypros2.Text, textFont, XBrushes.Black, new XRect(350, 175, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(lapaisypros3.Text, textFont, XBrushes.Black, new XRect(350, 190, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(lapaisypros4.Text, textFont, XBrushes.Black, new XRect(350, 205, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(lapaisypros5.Text, textFont, XBrushes.Black, new XRect(350, 220, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(lapaisypros6.Text, textFont, XBrushes.Black, new XRect(350, 235, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(lapaisypros7.Text, textFont, XBrushes.Black, new XRect(350, 250, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(lapaisypros8.Text, textFont, XBrushes.Black, new XRect(350, 265, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(lapaisypros9.Text, textFont, XBrushes.Black, new XRect(350, 280, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(lapaisypros10.Text, textFont, XBrushes.Black, new XRect(350, 295, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(lapaisypros11.Text, textFont, XBrushes.Black, new XRect(350, 310, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(lapaisypros12.Text, textFont, XBrushes.Black, new XRect(350, 325, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(lapaisypros13.Text, textFont, XBrushes.Black, new XRect(350, 340, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(lapaisypros14.Text, textFont, XBrushes.Black, new XRect(350, 355, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(lapaisypros15.Text, textFont, XBrushes.Black, new XRect(350, 370, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(lapaisypros16.Text, textFont, XBrushes.Black, new XRect(350, 385, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(lapaisypros17.Text, textFont, XBrushes.Black, new XRect(350, 400, page.Width, page.Height), XStringFormats.TopLeft);
-            graphics.DrawString(lapaisypros18.Text, textFont, XBrushes.Black, new XRect(350, 415, page.Width, page.Height), XStringFormats.TopLeft);
-
-            try
-            {
-                document.Save(fileName);
-
-                Process.Start(fileName);
-            }
-            catch (System.ArgumentException ex)
-            {
-                MessageBox.Show("Tyhjä tiedoston nimi", ex.Message);
-            }
-
+            //Testaa millainen tallennustiedosto luodaan
+            SaveLoadFunc sa = new SaveLoadFunc();
+            string json = sa.Save(this, seulalista);
+            File.WriteAllText(@".\Asetukset\TestiTallennus.json", json);
         }
-
-        //Holderit tekstilaatikoille ja alasvetovalikoille
-        string tyomaaHolder;
-        string lajiteHolder;
-        string seulontaHolder;
-        string nayteHolder;
-        string dateHolder;
-        string nayteOttajaHolder;
-        string lisatietoHolder;
-        string alaOtsikkoHolder;
-        string osoiteHolder;
-        string postiHolder;
-        string puhHolder;
-
-
-        public void GetValueFromTextBoxes() //Funktio ottaa tekstilaatikoista arvot ja asettaa ne holder-muuttujille 
-        {
-            tyomaaHolder = tyomaa.Text.Trim();
-            lajiteHolder = lajite.Text.Trim();
-            nayteHolder = nayteNro.Text.Trim();
-            dateHolder = date.Text.Trim();
-            nayteOttajaHolder = naytteenOttaja.Text.Trim();
-            lisatietoHolder = lisatieto.Text.Trim();
-            alaOtsikkoHolder = alempiOtsikko.Text.Trim();
-            osoiteHolder = lahiosoite.Text.Trim();
-            postiHolder = osoite.Text.Trim();
-            puhHolder = puh.Text.Trim();
-
-
-            if (rbKuivaseulonta.IsChecked == true) //Tarkastaa kumpi radiobuttoneista on valittuna
-            {
-                seulontaHolder = rbKuivaseulonta.Content.ToString().Trim();
-            }
-            else
-            {
-                seulontaHolder = rbPesuseulonta.Content.ToString().Trim();
-            }
-        }
-
-
-
-
-
-
-
+        
 
         private void Seula_DropDownClosed(object sender, EventArgs e)
         {
             //Kun valitsee uuden seulan seuladropdown valikoista, päivitetään seula-arvot ohjearvojen seuloihin
+            AsetaJakoSeulaValikonArvot();
             SeulaArvotOhjeArvoihin();
         }
         private void SeulaArvotOhjeArvoihin()
@@ -819,7 +1035,36 @@ namespace KiviMassaApp
             seulaValue17.Text = Seula17.Text.Trim();
             seulaValue18.Text = Seula18.Text.Trim();
         }
+        private void AsetaJakoSeulaValikonArvot()
+        {
+            List<Seulakirjasto> js = new List<Seulakirjasto>(); //Laitetaan jakoseula-dropdown valikkoon seulavalikoissa valitut arvot
+            JakoSeula.Items.Clear();
+            JakoSeula.Items.Add("Ei jakoa");
+            foreach (Control c in seulaArvot.Children)
+            {
+                if (c.GetType() == typeof(ComboBox)) //jos esineen tyyppi on combobox
+                {
+                    if (((ComboBox)c).Tag.ToString() != null) //Jos comboboxin tagi ei ole tyhjä
+                    {
+                        if (((ComboBox)c).Tag.ToString() == "seula") //jos comboboxin tagi on "seula" tai "jakoseula", eli kaikki seuladropdown-valikot
+                        {
+                            Seulakirjasto j = new Seulakirjasto();
+                            string seulatxt = ((ComboBox)c).Text;//otetaan valittu seula talteen
+                            seulatxt = seulatxt.Replace(".", ",");//Korvataan pisteet pilkuilla
+                            j.seula = Convert.ToDouble(seulatxt);
+                            js.Add(j);
+                        }
+                    }
 
+                }
+            }
+            foreach (Seulakirjasto j in js)
+            {
+                JakoSeula.Items.Add(j.seula);
+            }
+            JakoSeula.SelectedIndex = 0;
+
+        }
 
         private void EmptyFields_Click(object sender, RoutedEventArgs e) //Tyhjennä napin funktio
         {
@@ -870,11 +1115,104 @@ namespace KiviMassaApp
             lapaisypros17.Text = String.Empty;
             lapaisypros18.Text = String.Empty;
 
+            jaettuG0.Text = String.Empty;
+            jaettuG1.Text = String.Empty;
+            jaettuG2.Text = String.Empty;
+            jaettuG3.Text = String.Empty;
+            jaettuG4.Text = String.Empty;
+            jaettuG5.Text = String.Empty;
+            jaettuG6.Text = String.Empty;
+            jaettuG7.Text = String.Empty;
+            jaettuG8.Text = String.Empty;
+            jaettuG9.Text = String.Empty;
+            jaettuG10.Text = String.Empty;
+            jaettuG11.Text = String.Empty;
+            jaettuG12.Text = String.Empty;
+            jaettuG13.Text = String.Empty;
+            jaettuG14.Text = String.Empty;
+            jaettuG15.Text = String.Empty;
+            jaettuG16.Text = String.Empty;
+            jaettuG17.Text = String.Empty;
+            jaettuG18.Text = String.Empty;
+
             punnittuYhteensa.Text = String.Empty;
             tbKosteuspros.Text = String.Empty;
+            tbPesutappio.Text = String.Empty;
 
         }
 
+        //Funktiot mitkä mahdollistavat liikkumaan TextBoxeissa Enter-napin painalluksella
+        //-------------------------------------------------------------------
+        private void seulaArvot_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                TextBox s = e.Source as TextBox;
+                if (s != null)
+                {
+                    s.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+                }
 
+                e.Handled = true;
+            }
+        }
+
+        private void ohjeArvot_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                TextBox s = e.Source as TextBox;
+                if (s != null)
+                {
+                    s.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+                }
+
+                e.Handled = true;
+            }
+        }
+
+        private void tietoArvot_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                TextBox s = e.Source as TextBox;
+                if (s != null)
+                {
+                    s.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+                }
+
+                e.Handled = true;
+            }
+        }
+
+        private void osoiteArvot_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                TextBox s = e.Source as TextBox;
+                if (s != null)
+                {
+                    s.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+                }
+
+                e.Handled = true;
+
+            }
+        }
+        //------------------------------------------------------------------
+        private void PDFAsetukset_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            string[] files = Directory.GetFiles(@".\Asetukset\kuvat\logot");
+
+            foreach (string file in files)
+            {
+                Console.WriteLine(file);
+            }
+        }
     }
 }
