@@ -44,10 +44,12 @@
       <HintPath>..\packages\OxyPlot.Wpf.1.0.0\lib\net45\OxyPlot.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="PdfSharp, Version=1.32.3057.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\PDFsharp.1.32.3057.0\lib\net20\PdfSharp.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\PDFSharp\PdfSharp.dll</HintPath>
     </Reference>
     <Reference Include="PdfSharp.Charting, Version=1.32.3057.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\PDFsharp.1.32.3057.0\lib\net20\PdfSharp.Charting.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\PDFSharp\PdfSharp.Charting.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -73,12 +75,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="KayraImage.cs" />
     <Compile Include="KayraInitializer.cs" />
     <Compile Include="KiviKayra.xaml.cs">
       <DependentUpon>KiviKayra.xaml</DependentUpon>
     </Compile>
+    <Compile Include="KiviohjelmaPDF.cs" />
+    <Compile Include="MassaohjelmaPDF.cs" />
     <Compile Include="OsoiteTiedotJSON.cs" />
     <Compile Include="Osoitteet.cs" />
+    <Compile Include="SaveLoadFunc.cs" />
     <Compile Include="SeulaArvoJSONLuonti.cs" />
     <Compile Include="Seulakirjasto.cs" />
     <Compile Include="SyotetytArvot.cs" />

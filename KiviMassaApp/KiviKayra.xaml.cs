@@ -3,6 +3,7 @@ using OxyPlot.Axes;
 using OxyPlot.Series;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -49,31 +50,44 @@ namespace KiviMassaApp
 
             var model = new PlotModel { Title = "Rakeisuuskäyrä", Subtitle = "Vie hiiri pisteiden lähelle nähdäksesi arvot" };
             model.PlotType = PlotType.XY;
+            model.LegendPosition = LegendPosition.TopRight;
+            model.LegendOrientation = LegendOrientation.Horizontal;
+            model.LegendPlacement = LegendPlacement.Outside;
+            Collection<Item> items = new Collection<Item>();
+            for (int i = kaikkiseulat.Count - 1; i >= 0; i--)
+            {
+                items.Add(new Item(kaikkiseulat[i].seula.ToString(), kaikkiseulat[i].seula));
+            }
             LinearAxis yaxis = new LinearAxis //Y-akseli
             {
                 Maximum = 100,
                 Minimum = 0,
                 Title = "Prosentti",
                 TickStyle = TickStyle.Inside,
+                MinorTickSize = 4,
                 Position = AxisPosition.Left,
+                MinorStep = 5,
+                MinorGridlineStyle = LineStyle.Dot,
                 //AbsoluteMaximum = 100,
                 //AbsoluteMinimum = 0,
                 MajorStep = 10,
-                MinorStep = 2.5,
-                MajorGridlineStyle = LineStyle.Solid,
-                MinorGridlineStyle = LineStyle.Dash,
+                //MinorStep = 5,
+                MajorGridlineStyle = LineStyle.Dash,
+                //MinorGridlineStyle = LineStyle.Dash,
                 IsZoomEnabled = false,
                 IsPanEnabled = false
             };
             //------------------------------Logaritmiakseli-------------------------
-            /*LogarithmicAxis xaxis = new LogarithmicAxis(); //X-akseli
+            LogarithmicAxis xaxis = new LogarithmicAxis(); //X-akseli
+
             if (seulat == null || prosentit == null || seulat.Count == 0 || prosentit.Count == 0)
             {
                 xaxis.Title = "Seula";
                 xaxis.TickStyle = TickStyle.Inside;
                 xaxis.Position = AxisPosition.Bottom;
                 xaxis.MajorGridlineStyle = LineStyle.Solid;
-                xaxis.MinorGridlineStyle = LineStyle.Dash;
+                xaxis.MajorStep = 2;
+                //xaxis.MinorGridlineStyle = LineStyle.Dash;
                 //xaxis.Maximum = seulat[0].seula;
                 //xaxis.Minimum = seulat[(seulat.Count - 1)].seula;
                 xaxis.IsZoomEnabled = false;
@@ -85,45 +99,57 @@ namespace KiviMassaApp
                 xaxis.TickStyle = TickStyle.Inside;
                 xaxis.Position = AxisPosition.Bottom;
                 xaxis.MajorGridlineStyle = LineStyle.Solid;
-                xaxis.MinorGridlineStyle = LineStyle.Dash;
-                xaxis.Maximum = seulat[0].seula;
-                xaxis.Minimum = seulat[(seulat.Count - 1)].seula;
+                //xaxis.Base = logbase;
+                //xaxis.MajorStep =
+                //xaxis.MinorGridlineStyle = LineStyle.Dash;
+                xaxis.Maximum = kaikkiseulat[0].seula;
+                xaxis.Minimum = kaikkiseulat[(kaikkiseulat.Count - 1)].seula;
                 xaxis.IsZoomEnabled = false;
                 xaxis.IsPanEnabled = false;
 
-            }*/
-            CategoryAxis caxis = new CategoryAxis();//X-akseli
-
+            }
+            /*CategoryAxis caxis = new CategoryAxis();//X-akseli
+            
             if (seulat == null || prosentit == null || seulat.Count == 0 || prosentit.Count == 0)
             {
                 caxis.Title = "Seula";
                 caxis.TickStyle = TickStyle.Inside;
                 caxis.Position = AxisPosition.Bottom;
+                caxis.IsTickCentered = true;
                 caxis.MajorGridlineStyle = LineStyle.Solid;
-                caxis.MinorGridlineStyle = LineStyle.Dash;
+                caxis.MajorGridlineColor = OxyColors.DarkSlateGray;
+                caxis.MajorTickSize = 7;
                 //caxis.Maximum = seulat[0].seula;
                 //caxis.Minimum = seulat[(seulat.Count - 1)].seula;
                 caxis.IsZoomEnabled = false;
                 caxis.IsPanEnabled = false;
+                caxis.MinorStep = 0.5;
+                caxis.MajorStep = 1;
+                caxis.ItemsSource = items;
+                caxis.LabelField = "Label";
             }
             else
             {
                 caxis.Title = "Seula";
                 caxis.TickStyle = TickStyle.Inside;
                 caxis.Position = AxisPosition.Bottom;
-                //caxis.MajorGridlineStyle = LineStyle.Solid;
-                //caxis.MinorGridlineStyle = LineStyle.Dash;
+                caxis.IsTickCentered = true;
+                caxis.MajorGridlineStyle = LineStyle.Solid;
+                caxis.MajorGridlineColor = OxyColors.DarkSlateGray;
+                caxis.MajorTickSize = 7;
                 //caxis.Maximum = seulat[0].seula;
                 //caxis.Minimum = seulat[(seulat.Count-1)].seula;
-                caxis.IsZoomEnabled = true;
-                caxis.IsPanEnabled = true;
-                caxis.AxislineStyle = LineStyle.Solid;
-                caxis.MinorStep = 1;
+                caxis.IsZoomEnabled = false;
+                caxis.IsPanEnabled = false;
+                caxis.MinorStep = 0.5;
+                caxis.MajorStep = 1;
+                caxis.ItemsSource = items;
+                caxis.LabelField = "Label";
             }
             for (int i = kaikkiseulat.Count-1; i >= 0; i--) //Laittaa Y-akselille otsikot, eli seulat jotka on käytössä tällä hetkellä
             {
-                caxis.Labels.Add(kaikkiseulat[i].seula.ToString());
-            }
+                caxis.ActualLabels.Add(kaikkiseulat[i].seula.ToString());
+            }*/
 
             LineSeries l1 = new LineSeries //Tuloskäyrä/viiva
             {
@@ -131,6 +157,9 @@ namespace KiviMassaApp
                 MarkerType = MarkerType.Circle,
                 CanTrackerInterpolatePoints = false,
                 MarkerSize = 5
+                //LabelFormatString = "Läp%: {1:0.0} %"
+                
+
 
             };
             LineSeries ohje1 = new LineSeries
@@ -138,38 +167,58 @@ namespace KiviMassaApp
                 MarkerType = MarkerType.None,
                 CanTrackerInterpolatePoints = false,
                 MarkerSize = 0,
-                Color = OxyColors.Bisque
+                Color = OxyColors.CadetBlue
             };
             LineSeries ohje2 = new LineSeries
             {
                 MarkerType = MarkerType.None,
                 CanTrackerInterpolatePoints = false,
                 MarkerSize = 0,
-                Color = OxyColors.Bisque
+                Color = OxyColors.CadetBlue
             };
             LineSeries ohje3 = new LineSeries
             {
                 MarkerType = MarkerType.None,
                 CanTrackerInterpolatePoints = false,
                 MarkerSize = 0,
-                Color = OxyColors.BlanchedAlmond
+                Color = OxyColors.Indigo
             };
             LineSeries ohje4 = new LineSeries
             {
                 MarkerType = MarkerType.None,
                 CanTrackerInterpolatePoints = false,
                 MarkerSize = 0,
-                Color = OxyColors.BlanchedAlmond
+                Color = OxyColors.Indigo
             };
-            seulat.Reverse();
+            //seulat.Reverse();
             /*sisOhjeAla.Reverse();
             sisOhjeYla.Reverse();
             uloOhjeAla.Reverse();
             uloOhjeYla.Reverse();*/
+            List<Pisteet> la = new List<Pisteet>(); //Pääviiva
             List<Pisteet> o1 = new List<Pisteet>();
             List<Pisteet> o2 = new List<Pisteet>();
             List<Pisteet> o3 = new List<Pisteet>();
             List<Pisteet> o4 = new List<Pisteet>();
+            //------------------Käytetään CategoryAxisin kanssa--------------------
+            /*int j = 0;
+            for (int i = prosentit.Count - 1; i >= 0; i--)
+            {
+                Pisteet l = new Pisteet();
+                l.X = seulat[i].index;
+                l.Y = prosentit[j].tulos;
+                la.Add(l);
+                j++;
+            }//--------------------------------------------------------------------*/
+            //---------------Käytetään LogarithmAxisin kanssa---------------------
+            for (int i = 0; i < prosentit.Count; i++)  
+            {
+                Pisteet l = new Pisteet();
+                l.X = seulat[i].seula;//seulat[i].seula kun käytetään LogarithmAxisia
+                l.Y = prosentit[i].tulos;
+                la.Add(l);
+            }//--------------------------------------------------------------------*/
+
             for (int i = sisOhjeAla.Count-1; i >= 0; i--)
             {
                 Pisteet l = new Pisteet();
@@ -199,27 +248,7 @@ namespace KiviMassaApp
                 o4.Add(l);
             }
 
-            //------------------Käytetään CategoryAxisin kanssa--------------------
-            List<Pisteet> la = new List<Pisteet>(); //Pääviiva
-            int j = 0;
-            for (int i = prosentit.Count-1; i >= 0; i--)  
-            {
-                Pisteet l = new Pisteet();
-                l.X = seulat[i].index;
-                l.Y = prosentit[j].tulos;
-                la.Add(l);
-                j++;
-            }//--------------------------------------------------------------------
-
-            //---------------Käytetään LogarithmAxisin kanssa---------------------
-            /*for (int i = 0; i < prosentit.Count; i++)  
-            {
-                Pisteet l = new Pisteet();
-                l.X = seulat[i].seula;//seulat[i].seula kun käytetään LogarithmAxisia
-                l.Y = prosentit[i];
-                la.Add(l);
-            }*///--------------------------------------------------------------------
-
+            
             foreach (Pisteet e in la)
             {
                 l1.Points.Add(new DataPoint(e.X, e.Y));
@@ -257,8 +286,8 @@ namespace KiviMassaApp
             }*///-----------------------------------------------------------------------------------
 
             model.Axes.Add(yaxis);
-            //model.Axes.Add(xaxis);
-            model.Axes.Add(caxis);
+            model.Axes.Add(xaxis);
+            //model.Axes.Add(caxis);
             model.Series.Add(l1);
             model.Series.Add(ohje1);
             model.Series.Add(ohje2);
@@ -284,6 +313,17 @@ namespace KiviMassaApp
         {
             public double X { get; set; }
             public double Y { get; set; }
+        }
+        private class Item
+        {
+            public Item(string v, double seula)
+            {
+                Label = v;
+                Value = seula;
+            }
+
+            public string Label { get; set; }
+            public double Value { get; set; }
         }
 
         private void btnSulje_Click(object sender, RoutedEventArgs e)
