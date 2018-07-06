@@ -51,16 +51,17 @@
             <TextBox Name="nayteNro" Height="21" Width="142" Canvas.Left="307" Canvas.Top="21"></TextBox>
 
             <Label Content="Lajite:" Canvas.Top="41" Canvas.Left="53"></Label>
-            <TextBox Name="lajite" Height="21" Width="127" Canvas.Left="99" Canvas.Top="43"></TextBox>
+            <TextBox Name="lajite" Height="21" Width="127" Canvas.Left="99" Canvas.Top="45"></TextBox>
 
             <Label Content="Päiväys:" Canvas.Left="251" Canvas.Top="40"></Label>
-            <TextBox Name="date" Height="21" Width="142" Canvas.Left="307" Canvas.Top="43"></TextBox>
+            <TextBox Name="date" Height="21" Width="142" Canvas.Left="307" Canvas.Top="45
+                     "></TextBox>
             <RadioButton Name="rbKuivaseulonta" Canvas.Left="459" Canvas.Top="35" Content="Kuivaseulonta" Checked="rbKuivaseulonta_Checked"/>
             <RadioButton Name="rbPesuseulonta" Canvas.Top="62" Canvas.Left="459" Content="Pesuseulonta" Checked="rbPesuseulonta_Checked"/>
-            <Label Content="Osoite:" Canvas.Top="62" Canvas.Left="47"/>
-            <TextBox x:Name="osoite" Height="22" Width="127" Canvas.Left="99" Canvas.Top="65"/>
-            <Label Content="Puhelin:" Canvas.Top="62" Canvas.Left="250"/>
-            <TextBox x:Name="puh" Height="22" Width="142" Canvas.Left="307" Canvas.Top="65"/>
+            <TextBox x:Name="naytteenOttaja" Height="21" Width="127" Canvas.Left="99" Canvas.Top="69"/>
+            <Label Content="Näytteen ottaja:" Canvas.Left="-1" Canvas.Top="65"/>
+            <TextBox x:Name="tutkija" Height="21" Width="142" Canvas.Left="307" Canvas.Top="69"/>
+            <Label Content="Tutkija:" Canvas.Left="251" Canvas.Top="65"/>
         </Canvas>
 
         <!--Lisävaihtoehdot-->
@@ -75,10 +76,6 @@
             <TextBox x:Name="alempiOtsikko" Height="22" Width="163" Canvas.Left="103" Canvas.Top="68"/>
             <Label Content="Lähiosoite:" Canvas.Top="14" Canvas.Left="303"/>
             <TextBox x:Name="lahiosoite" Height="22" Width="163" Canvas.Left="380" Canvas.Top="16"/>
-            <Label Content="Tutkija:" Canvas.Left="327" Canvas.Top="39"/>
-            <TextBox x:Name="tutkija" Height="21" Width="163" Canvas.Left="380" Canvas.Top="43"/>
-            <Label Content="Näytteen ottaja:" Canvas.Left="280" Canvas.Top="66"/>
-            <TextBox x:Name="naytteenOttaja" Height="21" Width="163" Canvas.Left="380" Canvas.Top="70"/>
             <Button x:Name="tallennaOsoitteet" Content="Tallenna" Canvas.Left="583" Canvas.Top="70" Height="22" Width="74" Click="tallennaOsoitteet_Click" />
             <ComboBox Canvas.Left="562" Canvas.Top="38" Width="120" x:Name="Kuvat">
                 <ComboBoxItem Content="Savonialogo 1" x:Name="Kuva1" IsSelected="True" Tag=".\Asetukset\kuvat\logot\savonialogo1.jpg"/>
@@ -86,6 +83,10 @@
                 <ComboBoxItem Content="Savonialogo 3 engl" x:Name="Kuva6" Tag=".\Asetukset\kuvat\logot\savonialogo6.jpg"/>
             </ComboBox>
             <Label Content="Valitse logo" Canvas.Left="586" Canvas.Top="10"/>
+            <TextBox x:Name="osoite" Height="22" Width="163" Canvas.Left="380" Canvas.Top="42"/>
+            <Label Content="Osoite:" Canvas.Top="38" Canvas.Left="303"/>
+            <TextBox x:Name="puh" Height="22" Width="163" Canvas.Left="380" Canvas.Top="68"/>
+            <Label Content="Puhelin:" Canvas.Top="64" Canvas.Left="303"/>
 
         </Canvas>
 
