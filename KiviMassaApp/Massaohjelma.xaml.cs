@@ -98,6 +98,16 @@ namespace KiviMassaApp
             _main.SuljeIkkuna("massa");
         }
 
+        KayraInitializerMassa kayrainitializer = new KayraInitializerMassa();
+        private void btnNaytaKaavioM_Click(object sender, RoutedEventArgs e) // Avataan käyräikkuna
+        {
+            kayrainitializer.KayraPiirto(this);
+        }
+        public void SuljeKayraIkkuna()
+        {
+            kayrainitializer.SuljeKayraIkkuna(); ;
+        }
+
         private void LaskeSeula_Click(object sender, RoutedEventArgs e)
         {
             EmptyResultFields();//tyhjentää tuloskentät
@@ -674,12 +684,84 @@ namespace KiviMassaApp
         }
         private void btnLaskeSideainepitoisuus_Click(object sender, RoutedEventArgs e)
         {
+            int pyoristys = Convert.ToInt32(dbDesimaali.Text);
 
+            Laskut l = new Laskut();
+
+            double sf1 = 0, sf2 = 0, M1 = 0, M2 = 0, R = 0, f = 0;
+
+
+            if (double.TryParse(sentrifuugipaperi.Text, out double r))
+            {
+                sf1 = Convert.ToDouble(sentrifuugipaperi.Text);
+            }
+
+            if (double.TryParse(sentrifuugipaperirilleri.Text, out r))
+            {
+                sf2 = Convert.ToDouble(sentrifuugipaperirilleri.Text);
+            }
+
+            if (double.TryParse(naytteenPaino.Text, out r))
+            {
+                M1 = Convert.ToDouble(naytteenPaino.Text);
+            }
+
+            if (double.TryParse(rumpujanayte.Text, out r))
+            {
+                M2 = Convert.ToDouble(rumpujanayte.Text);
+            }
+
+            if (double.TryParse(rummunPaino.Text, out r))
+            {
+                R = Convert.ToDouble(rummunPaino.Text);
+            }
+
+            double sideainep = l.Sideainepitoisuus(M1, M2, R, f);
+            double sideainem = l.Sideainemaara(M1, M2, R, f);
+            f = l.FillerinMaara(sf1, sf2);
+
+            rumpujanayte.Text = Math.Round(M2, pyoristys).ToString();
+            sideainepitoisuus.Text = Math.Round(sideainep, pyoristys).ToString();
+            sideainemaara.Text = Math.Round(sideainem, pyoristys).ToString();
+            Filleri.Text = Math.Round(f, pyoristys).ToString();
+            return;
         }
 
         private void btnTyhjennaOhjeAlue_Click(object sender, RoutedEventArgs e)
         {
+            alaRajaValue1.Text = String.Empty;
+            alaRajaValue2.Text = String.Empty;
+            alaRajaValue3.Text = String.Empty;
+            alaRajaValue4.Text = String.Empty;
+            alaRajaValue5.Text = String.Empty;
+            alaRajaValue6.Text = String.Empty;
+            alaRajaValue7.Text = String.Empty;
+            alaRajaValue8.Text = String.Empty;
+            alaRajaValue9.Text = String.Empty;
+            alaRajaValue10.Text = String.Empty;
+            alaRajaValue11.Text = String.Empty;
+            alaRajaValue12.Text = String.Empty;
+            alaRajaValue13.Text = String.Empty;
+            alaRajaValue14.Text = String.Empty;
+            alaRajaValue15.Text = String.Empty;
+            alaRajaValue16.Text = String.Empty;
 
+            ylaRajaValue1.Text = String.Empty;
+            ylaRajaValue2.Text = String.Empty;
+            ylaRajaValue3.Text = String.Empty;
+            ylaRajaValue4.Text = String.Empty;
+            ylaRajaValue5.Text = String.Empty;
+            ylaRajaValue6.Text = String.Empty;
+            ylaRajaValue7.Text = String.Empty;
+            ylaRajaValue8.Text = String.Empty;
+            ylaRajaValue9.Text = String.Empty;
+            ylaRajaValue10.Text = String.Empty;
+            ylaRajaValue11.Text = String.Empty;
+            ylaRajaValue12.Text = String.Empty;
+            ylaRajaValue13.Text = String.Empty;
+            ylaRajaValue14.Text = String.Empty;
+            ylaRajaValue15.Text = String.Empty;
+            ylaRajaValue16.Text = String.Empty;
         }
 
         private void ExitProgram_Click(object sender, RoutedEventArgs e)

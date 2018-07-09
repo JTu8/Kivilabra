@@ -322,7 +322,7 @@ namespace KiviMassaApp
             paaluHolder = _massa.paaluKaista.Text.Trim();
 
             naytePainoHolder = _massa.naytteenPaino.Text.Trim();
-            kiviAineHolder = _massa.kiviaineksenYhteispaino.Text.Trim();
+            //kiviAineHolder = _massa.kiviaineksenYhteispaino.Text.Trim();
             sideAineMHolder = _massa.sideainemaara.Text.Trim();
             sideainePHolder = _massa.sideainepitoisuus.Text.Trim();
 

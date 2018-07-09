@@ -77,10 +77,14 @@
     </ApplicationDefinition>
     <Compile Include="KayraImage.cs" />
     <Compile Include="KayraInitializer.cs" />
+    <Compile Include="KayraInitializerMassa.cs" />
     <Compile Include="KiviKayra.xaml.cs">
       <DependentUpon>KiviKayra.xaml</DependentUpon>
     </Compile>
     <Compile Include="KiviohjelmaPDF.cs" />
+    <Compile Include="MassaKayra.xaml.cs">
+      <DependentUpon>MassaKayra.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MassaohjelmaPDF.cs" />
     <Compile Include="OsoiteTiedotJSON.cs" />
     <Compile Include="Osoitteet.cs" />
@@ -115,6 +119,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="MassaKayra.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Massaohjelma.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
