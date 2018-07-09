@@ -159,7 +159,6 @@ Z:\Harjoittelu 2018\Koodia\Kivilabra-master\KiviMassaApp\bin\Debug\KiviMassaApp.
 Z:\Harjoittelu 2018\Koodia\Kivilabra-master\KiviMassaApp\bin\Debug\KiviMassaApp.pdb
 Z:\Harjoittelu 2018\Koodia\Kivilabra-master\KiviMassaApp\bin\Debug\Newtonsoft.Json.dll
 Z:\Harjoittelu 2018\Koodia\Kivilabra-master\KiviMassaApp\bin\Debug\OxyPlot.dll
-Z:\Harjoittelu 2018\Koodia\Kivilabra-master\KiviMassaApp\bin\Debug\OxyPlot.Wpf.dll
 Z:\Harjoittelu 2018\Koodia\Kivilabra-master\KiviMassaApp\bin\Debug\Newtonsoft.Json.xml
 Z:\Harjoittelu 2018\Koodia\Kivilabra-master\KiviMassaApp\bin\Debug\OxyPlot.pdb
 Z:\Harjoittelu 2018\Koodia\Kivilabra-master\KiviMassaApp\bin\Debug\OxyPlot.xml
@@ -188,7 +187,6 @@ Z:\Harjoittelu 2018\Koodia\Kivilabra-master\KiviMassaApp\obj\Debug\KiviMassaApp.
 Z:\Harjoittelu 2018\Koodia\Kivilabra-master\KiviMassaApp\obj\Debug\KiviMassaApp.exe
 Z:\Harjoittelu 2018\Koodia\Kivilabra-master\KiviMassaApp\obj\Debug\KiviMassaApp.pdb
 Z:\Harjoittelu 2018\Koodia\Kivilabra-master\KiviMassaApp\bin\Debug\PdfSharp.Charting.dll
-Z:\Harjoittelu 2018\Koodia\Kivilabra-master\KiviMassaApp\bin\Debug\PdfSharp.dll
 Z:\Harjoittelu2\Kivilabra\KiviMassaApp\bin\Debug\KiviMassaApp.exe.config
 Z:\Harjoittelu2\Kivilabra\KiviMassaApp\bin\Debug\KiviMassaApp.exe
 Z:\Harjoittelu2\Kivilabra\KiviMassaApp\bin\Debug\KiviMassaApp.pdb
@@ -224,3 +222,6 @@ Z:\Harjoittelu2\Kivilabra\KiviMassaApp\obj\Debug\KiviMassaApp.csproj.GenerateRes
 Z:\Harjoittelu2\Kivilabra\KiviMassaApp\obj\Debug\KiviMassaApp.csproj.CoreCompileInputs.cache
 Z:\Harjoittelu2\Kivilabra\KiviMassaApp\obj\Debug\KiviMassaApp.exe
 Z:\Harjoittelu2\Kivilabra\KiviMassaApp\obj\Debug\KiviMassaApp.pdb
+Z:\Harjoittelu 2018\Koodia\Kivilabra-master\KiviMassaApp\bin\Debug\PdfSharp.xml
+Z:\Harjoittelu 2018\Koodia\Kivilabra-master\KiviMassaApp\obj\Debug\MassaKayra.g.cs
+Z:\Harjoittelu 2018\Koodia\Kivilabra-master\KiviMassaApp\obj\Debug\MassaKayra.baml
